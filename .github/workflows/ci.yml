@@ -1,0 +1,49 @@
+name: MauiMicroMvvm CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - "sample/**"
+      - "src/**"
+      - "test/**"
+      - "version.json"
+      - "build.slnf"
+      - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: avantipoint/workflow-templates/.github/workflows/dotnet-build.yml@master
+    permissions:
+      statuses: write
+      checks: write
+    with:
+      name: MauiMicroMvvm
+      solution-path: build.slnf
+      install-workload: maui
+      code-sign: true
+    secrets:
+      codeSignKeyVault: ${{ secrets.CodeSignKeyVault }}
+      codeSignClientId: ${{ secrets.CodeSignClientId }}
+      codeSignTenantId: ${{ secrets.CodeSignTenantId }}
+      codeSignClientSecret: ${{ secrets.CodeSignClientSecret }}
+      codeSignCertificate: ${{ secrets.CodeSignCertificate }}
+
+  deploy-internal:
+    uses: avantipoint/workflow-templates/.github/workflows/deploy-nuget.yml@master
+    needs: build
+    with:
+      name: Deploy Internal
+    secrets:
+      feedUrl: ${{ secrets.IN_HOUSE_NUGET_FEED }}
+      apiKey: ${{ secrets.IN_HOUSE_API_KEY }}
+
+  deploy-sponsors:
+    uses: avantipoint/workflow-templates/.github/workflows/deploy-nuget.yml@master
+    needs: build
+    with:
+      name: Deploy Sponsor Connect
+    secrets:
+      feedUrl: ${{ secrets.SPONSOR_CONNECT_NUGET_FEED }}
+      apiKey: ${{ secrets.SPONSOR_CONNECT_TOKEN }}

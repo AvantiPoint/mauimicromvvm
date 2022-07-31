@@ -1,0 +1,8 @@
+{
+  "solution": {
+    "path": "MauiMicroMvvm.sln",
+    "projects": [
+      "src\\MauiMicroMvvm\\MauiMicroMvvm.csproj"
+    ]
+  }
+}

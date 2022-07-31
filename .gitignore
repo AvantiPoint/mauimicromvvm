@@ -1,0 +1,7 @@
+[Oo]bj
+[Bb]in
+
+.vs
+*.csproj.user
+
+Artifacts/

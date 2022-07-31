@@ -1,0 +1,48 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Dan Siegel</Authors>
+    <Company>AvantiPoint, LLC</Company>
+    <Copyright>Copyright © AvantiPoint, LLC 2016-$([System.DateTime]::Now.Year)</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>avantipoint-icon.png</PackageIcon>
+    <PackageOutputPath>$([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)', 'Artifacts'))</PackageOutputPath>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSource>True</IncludeSource>
+    <LangVersion>latest</LangVersion>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/AvantiPoint/mauimicromvvm.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/AvantiPoint/mauimicromvvm</PackageProjectUrl>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+  <!-- CI Helper -->
+  <PropertyGroup>
+    <CI>false</CI>
+    <CI Condition=" '$(BUILD_BUILDNUMBER)' != '' ">true</CI>
+    <ContinuousIntegrationBuild>$(CI)</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" $(IsPackable) ">
+    <None Include="$(MSBuildThisFileDirectory)LICENSE"
+          Visible="False"
+          Pack="True"
+          PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)avantipoint-icon.png"
+          Visible="False"
+          Pack="True"
+          PackagePath="" />
+    <SourceRoot Include="$(MSBuildThisFileDirectory)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.108">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

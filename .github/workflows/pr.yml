@@ -1,0 +1,25 @@
+name: MauiMicroMvvm PR Validation
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - "sample/**"
+      - "src/**"
+      - "test/**"
+      - "version.json"
+      - "build.slnf"
+      - ".github/workflows/pr.yml"
+
+jobs:
+  build:
+    uses: avantipoint/workflow-templates/.github/workflows/dotnet-build.yml@master
+    permissions:
+      statuses: write
+      checks: write
+      pull-requests: write
+      contents: write
+    with:
+      name: MauiMicroMvvm
+      solution-path: build.slnf
+      install-workload: maui
