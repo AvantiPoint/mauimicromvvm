@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:MauiMicroSample.ViewModels"
              xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
              micro:MauiMicro.Autowire="True"
+             Title="Main Page"
              x:DataType="vm:MainPageViewModel"
              x:Class="MauiMicroSample.Pages.MainPage">
 

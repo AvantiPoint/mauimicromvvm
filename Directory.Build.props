@@ -18,8 +18,6 @@
 
   <!-- CI Helper -->
   <PropertyGroup>
-    <CI>false</CI>
-    <CI Condition=" '$(BUILD_BUILDNUMBER)' != '' ">true</CI>
     <ContinuousIntegrationBuild>$(CI)</ContinuousIntegrationBuild>
   </PropertyGroup>
 

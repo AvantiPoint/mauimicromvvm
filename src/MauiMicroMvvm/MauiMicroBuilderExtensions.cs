@@ -42,7 +42,7 @@ public static class MauiMicroBuilderExtensions
     xmlns:x=""http://schemas.microsoft.com/winfx/2009/xaml"">
   <ResourceDictionary.MergedDictionaries>
 {string.Join('\n', qualifiedResources)}
- </ResourceDictionary.MergedDictionaries>
+  </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>";
                     app.Resources.LoadFromXaml(xaml);
                 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using MauiMicroMvvm.Xaml;
 
 namespace MauiMicroMvvm.Internals;
 
@@ -17,6 +18,13 @@ public class AppLifecycleBehavior : Behavior
         base.OnAttachedTo(bindable);
         Page.Appearing += OnAppearing;
         Page.Disappearing += OnDisappearing;
+
+        if(View != Page)
+        {
+            Page.PropertyChanged += OnPagePropertyChanged;
+            View.PropertyChanged += OnViewPropertyChanged;
+        }
+
         var shell = Shell.Current;
         if (shell.Parent is Window window)
         {
@@ -31,6 +39,8 @@ public class AppLifecycleBehavior : Behavior
         base.OnDetachingFrom(bindable);
         Page.Appearing -= OnAppearing;
         Page.Disappearing -= OnDisappearing;
+        Page.PropertyChanged -= OnPagePropertyChanged;
+        View.PropertyChanged -= OnViewPropertyChanged;
         if (_window is not null)
         {
             _window.Resumed -= OnResumed;
@@ -38,6 +48,26 @@ public class AppLifecycleBehavior : Behavior
         }
         _window = null;
         Page = null;
+    }
+
+    private void OnViewPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != MauiMicro.SharedContextProperty.PropertyName)
+            return;
+
+        var value = MauiMicro.GetSharedContext(View);
+        if (MauiMicro.GetSharedContext(Page) != value)
+            MauiMicro.SetSharedContext(Page, value);
+    }
+
+    private void OnPagePropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != MauiMicro.SharedContextProperty.PropertyName)
+            return;
+
+        var value = MauiMicro.GetSharedContext(Page);
+        if(MauiMicro.GetSharedContext(View) != value)
+            MauiMicro.SetSharedContext(View, value);
     }
 
     private void OnResumed(object sender, EventArgs e)

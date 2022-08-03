@@ -3,12 +3,24 @@
     x:Class="MauiMicroSample.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:pages="clr-namespace:MauiMicroSample.Pages"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+    micro:MauiMicro.Autowire="True"
+    xmlns:pages="clr-namespace:MauiMicroSample.Pages">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate pages:MainPage}"
-        Route="MainPage" />
+  <FlyoutItem Title="Main Page"
+              Icon="home.png"
+              Route="MainPage">
+    <Tab>
+      <ShellContent ContentTemplate="{DataTemplate pages:MainPage}" />
+    </Tab>
+  </FlyoutItem>
+
+  <FlyoutItem Title="Message Demo"
+              Icon="messages.png"
+              Route="MessageDemoPage">
+    <Tab>
+      <ShellContent ContentTemplate="{DataTemplate pages:MessageDemoPage}" />
+    </Tab>
+  </FlyoutItem>
 
 </Shell>
