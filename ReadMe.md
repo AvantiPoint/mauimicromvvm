@@ -40,11 +40,50 @@ return builder.Build();
 
 ### Autowire Your Views
 
-Once Views have been mapped to ViewModels you can do this easily as shown below.
+Once Views have been mapped to ViewModels you can do this easily as shown below. Unlike most other frameworks MauiMicro understands that proper MVVM should let you do this with any Visual Element so you can do this anywhere you want...
 
 ```xaml
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
              micro:MauiMicro.Autowire="True"
              x:Class="MauiMicroSample.Pages.MainPage">
+```
+
+```xaml
+<StackLayout xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             micro:MauiMicro.Autowire="True"
+             x:Class="MauiMicroSample.Controls.MyControl">
+```
+
+```xaml
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             micro:MauiMicro.Autowire="True"
+             x:Class="MauiMicroSample.AppShell">
+```
+
+### Sharing Context
+
+While this isn't supported between the Shell and it's children, you may want to share a context between the ViewModel on your Page and the ViewModel on your child Views. This is possible by using the `MauiMicro.SharedContext` property on the Views. To start be sure to set the `MauiMicro.SharedContext` property on your control View.
+
+```xaml
+<StackLayout xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             micro:MauiMicro.Autowire="True"
+             micro:MauiMicro.SharedContext="{Binding MyProperty}"
+             x:Class="MauiMicroSample.Controls.MyControl">
+```
+
+Next be sure to set the property on your Page, and add the control somewhere on your page.
+
+```xaml
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             xmlns:controls="clr-namespace:MauiMicroSample.Controls"
+             micro:MauiMicro.Autowire="True"
+             micro:MauiMicro.SharedContext="{Binding MyProperty}"
+             x:Class="MauiMicroSample.Pages.MainPage">
+  <controls:MyControl />
+</ContentPage>
 ```
