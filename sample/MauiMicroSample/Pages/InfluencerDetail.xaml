@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             xmlns:vm="clr-namespace:MauiMicroSample.ViewModels"
+             micro:MauiMicro.Autowire="True"
+             x:Class="MauiMicroSample.Pages.InfluencerDetail"
+             x:DataType="vm:InfluencerDetailViewModel"
+             Title="{Binding Influencer.Name}">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <Style TargetType="StackLayout">
+        <Setter Property="Margin" Value="20" />
+      </Style>
+      <Style TargetType="Label" Class="detailPageTitle" x:Key="DetailPageTitle">
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="Medium" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+      </Style>
+      <Style TargetType="Label" Class="detailPageSubtitle" x:Key="DetailPageSubtitle">
+        <Setter Property="Margin" Value="0,15,0,0" />
+      </Style>
+      <Style TargetType="Image">
+        <Setter Property="HeightRequest" Value="150" />
+        <Setter Property="WidthRequest" Value="150" />
+      </Style>
+      <Shadow x:Key="DefaultShadow" Opacity="0.9" Offset="20,20" Radius="20" Brush="Black" />
+    </ResourceDictionary>
+  </ContentPage.Resources>
+  <Grid RowDefinitions="Auto,*,Auto"
+        ColumnDefinitions="Auto,*"
+        Padding="15,10"
+        ColumnSpacing="10">
+    <Image Source="{Binding Influencer.Avatar}"
+         Shadow="{StaticResource DefaultShadow}" />
+    <StackLayout Grid.Column="1"
+               Margin="10,0"
+               Spacing="5">
+      <Label Text="{Binding Influencer.Name}" 
+           SemanticProperties.Description="The name of the Maui Influencer"
+           FontSize="Title"
+           FontAttributes="Bold" />
+      <Image Source="microsoft.png"
+           HeightRequest="50"
+           WidthRequest="50"
+           HorizontalOptions="Start"
+           IsVisible="{Binding Influencer.Microsoft}" />
+      <Image Source="mvp.png"
+           HeightRequest="50"
+           WidthRequest="124"
+           HorizontalOptions="Start"
+           IsVisible="{Binding Influencer.Mvp}" />
+    </StackLayout>
+
+    <Frame HasShadow="True"
+         Grid.Row="1"
+         Grid.ColumnSpan="2"
+         HorizontalOptions="Start"
+         Margin="5,20">
+      <Label Text="{Binding Influencer.Bio}" />
+    </Frame>
+
+    <StackLayout HorizontalOptions="Center"
+               Orientation="Horizontal"
+               Margin="0,20"
+               Grid.Row="2"
+               Grid.ColumnSpan="2">
+      <!--<Button Text="GitHub"
+            Command="{Binding OpenGitHubCommand}"
+            Style="{DynamicResource LinkButton}" />
+      <Label Text=" | " />
+      <Button Text="Twitter"
+            Command="{Binding OpenTwitterCommand}"
+            Style="{DynamicResource LinkButton}" />-->
+    </StackLayout>
+  </Grid>
+</ContentPage>

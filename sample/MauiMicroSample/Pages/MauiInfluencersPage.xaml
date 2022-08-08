@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             xmlns:vm="clr-namespace:MauiMicroSample.ViewModels"
+             xmlns:model="clr-namespace:MauiMicroSample.Models"
+             micro:MauiMicro.Autowire="True"
+             x:Class="MauiMicroSample.Pages.MauiInfluencersPage"
+             x:DataType="vm:MauiInfluencersViewModel"
+             x:Name="page"
+             Title="Maui Influencers">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <Style TargetType="Image">
+        <Setter Property="HeightRequest" Value="60" />
+        <Setter Property="WidthRequest" Value="60" />
+        <Setter Property="Margin" Value="10,0" />
+      </Style>
+    </ResourceDictionary>
+  </ContentPage.Resources>
+  <CollectionView ItemsSource="{Binding Influencers}">
+    <CollectionView.ItemTemplate>
+      <DataTemplate>
+        <Grid x:DataType="model:MauiInfluencer"
+              Padding="10"
+              RowDefinitions="Auto,*"
+              ColumnDefinitions="Auto,*">
+          <Grid.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding BindingContext.RowSelected, Source={x:Reference page}}"
+                                  CommandParameter="{Binding .}" />
+          </Grid.GestureRecognizers>
+          <Image Grid.RowSpan="2"
+                 Source="{Binding Avatar}"
+                 Aspect="AspectFill" />
+          <Label Grid.Column="1"
+                 Text="{Binding Name}" />
+
+          <Image Source="microsoft.png"
+               HeightRequest="25"
+               WidthRequest="25"
+               HorizontalOptions="Start"
+               IsVisible="{Binding Microsoft}"
+               Grid.Row="1"
+               Grid.Column="1" />
+          <Image Source="mvp.png"
+               HeightRequest="25"
+               WidthRequest="62"
+               HorizontalOptions="Start"
+               IsVisible="{Binding Mvp}"
+               Grid.Row="1"
+               Grid.Column="1" />
+        </Grid>
+      </DataTemplate>
+    </CollectionView.ItemTemplate>
+  </CollectionView>
+</ContentPage>

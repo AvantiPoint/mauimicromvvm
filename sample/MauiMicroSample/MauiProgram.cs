@@ -1,7 +1,9 @@
 ﻿using MauiMicroSample.Modules;
 using MauiMicroSample.Pages;
+using MauiMicroSample.Services;
 using MauiMicroSample.ViewModels;
 using Microsoft.Extensions.Logging;
+using Refit;
 
 namespace MauiMicroSample;
 
@@ -23,7 +25,15 @@ public static class MauiProgram
         builder.Services.MapView<MainPage, MainPageViewModel>()
             .MapView<MessageDemoPage, MessageDemoPageViewModel>()
             .MapView<MessageDisplay, MessageDisplayViewModel>()
-            .MapView<AppShell, AppShellViewModel>();
+            .MapView<MauiInfluencersPage, MauiInfluencersViewModel>()
+            .MapView<InfluencerDetail, InfluencerDetailViewModel>()
+            .MapView<AppShell, AppShellViewModel>()
+            .AddSingleton(Connectivity.Current)
+            .AddSingleton(_ => new HttpClient
+            {
+                BaseAddress = new Uri("https://dansiegel.blob.core.windows.net")
+            })
+            .AddSingleton(_ => RestService.For<IApiClient>(_.GetRequiredService<HttpClient>()));
 
         builder.Logging.AddConsole();
 
