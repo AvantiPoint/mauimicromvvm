@@ -35,6 +35,8 @@ public static class MauiProgram
             })
             .AddSingleton(_ => RestService.For<IApiClient>(_.GetRequiredService<HttpClient>()));
 
+        Routing.RegisterRoute($"{nameof(MauiInfluencersPage)}/{nameof(InfluencerDetail)}", typeof(InfluencerDetail));
+
         builder.Logging.AddConsole();
 
         return builder.Build();

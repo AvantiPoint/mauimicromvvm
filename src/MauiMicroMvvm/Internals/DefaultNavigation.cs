@@ -12,15 +12,15 @@ public class DefaultNavigation : INavigation
         _shell = shell;
     }
 
-    public Task GoToAsync(string uri) => 
-        _shell.GoToAsync(uri);
+    public async Task GoToAsync(string uri) => 
+        await _shell.GoToAsync(uri);
 
-    public Task GoToAsync(string uri, IDictionary<string, object> parameters) => 
-        _shell.GoToAsync(uri, parameters);
+    public async Task GoToAsync(string uri, IDictionary<string, object> parameters) =>
+        await _shell.GoToAsync(uri, parameters);
 
-    public Task GoToAsync(string uri, bool animate) => 
-        _shell.GoToAsync(uri, animate);
+    public async Task GoToAsync(string uri, bool animate) =>
+        await _shell.GoToAsync(uri, animate);
 
-    public Task GoToAsync(string uri, bool animate, IDictionary<string, object> parameters) => 
-        _shell.GoToAsync(uri, animate, parameters);
+    public async Task GoToAsync(string uri, bool animate, IDictionary<string, object> parameters) =>
+        await _shell.GoToAsync(uri, animate, parameters);
 }
