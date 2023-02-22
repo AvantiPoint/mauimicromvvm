@@ -1,0 +1,70 @@
+<Project Sdk="Microsoft.Build.NoTargets/3.7.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <PackageType>Template</PackageType>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>Project Template for Maui Micro by AvantiPoint</Description>
+    <PackageTags>dotnet-maui;mauimicro;mauimicromvvm;mauimicrotemplates;templates;mvvm;maui;</PackageTags>
+    <PackageId>AvantiPoint.$(AssemblyName)</PackageId>
+    <Title>MauiMicroMvvm Templates</Title>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <TemplateFile Include="content/**/*"
+                  Exclude="**/obj/**;**/bin/**;**/.vs/**;**/*.user" />
+    <UpToDateCheckInput Include="@(TemplateFile)" />
+  </ItemGroup>
+
+  <Target Name="PrepareTemplateFiles" BeforeTargets="ReplaceVersions;BeforeBuild">
+    <RemoveDir Directories="$(IntermediateOutputPath)/content" />
+    <Copy
+      SourceFiles="@(TemplateFile)"
+      DestinationFiles="$(IntermediateOutputPath)/content/%(RecursiveDir)%(Filename)%(Extension)"
+      SkipUnchangedFiles="false" />
+    <Copy
+      SourceFiles="..\..\avantipoint-icon.png"
+      DestinationFiles="$(IntermediateOutputPath)/content/MauiMicroApp.1/.template.config/icon.png"
+      SkipUnchangedFiles="false" />
+    <ItemGroup>
+      <_PackageFiles Include="$(IntermediateOutputPath)/content/**/*"
+                     PackagePath="content" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ReplaceVersions" BeforeTargets="BeforeBuild" AfterTargets="PrepareTemplateFiles" DependsOnTargets="GetBuildVersion">
+    <ItemGroup>
+      <_AllCSProjFiles Include="$(IntermediateOutputPath)/content/**/*.csproj" />
+    </ItemGroup>
+    <ReplaceFileText Filename="%(_AllCSProjFiles.Identity)"
+          MatchExpression="Version=&quot;$MauiMicroVersion$&quot;"
+          ReplacementText="Version=&quot;$(PackageVersion)&quot;" />
+  </Target>
+
+  <UsingTask TaskName="ReplaceFileText"
+      TaskFactory="RoslynCodeTaskFactory"
+      AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Filename ParameterType="System.String" Required="true" />
+      <MatchExpression ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          File.WriteAllText(
+            Filename,
+            Regex.Replace(File.ReadAllText(Filename), Regex.Escape(MatchExpression), ReplacementText)
+            );
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+</Project>
