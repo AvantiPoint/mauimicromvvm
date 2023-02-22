@@ -2,6 +2,7 @@
   "solution": {
     "path": "MauiMicroMvvm.sln",
     "projects": [
+      "src\\MauiMicroMvvm.Templates\\MauiMicroMvvm.Templates.csproj",
       "src\\MauiMicroMvvm\\MauiMicroMvvm.csproj",
       "src\\MauiMicroMvvm.Rx\\MauiMicroMvvm.Rx.csproj"
     ]

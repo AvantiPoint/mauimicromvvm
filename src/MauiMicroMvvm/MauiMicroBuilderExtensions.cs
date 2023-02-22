@@ -1,4 +1,4 @@
-﻿using MauiMicroMvvm;
+using MauiMicroMvvm;
 using MauiMicroMvvm.Internals;
 using INavigation = MauiMicroMvvm.INavigation;
 
@@ -17,12 +17,12 @@ public static class MauiMicroBuilderExtensions
     {
         builder.UseMauiApp<TApp>();
 
-        builder.Services.AddSingleton<TShell>()
+        builder.Services.AddSingleton<Shell, TShell>()
             .AddSingleton<TApp>()
             .AddSingleton<IApplication>(sp =>
             {
                 var app = sp.GetRequiredService<TApp>();
-                var shell = sp.GetRequiredService<TShell>();
+                var shell = sp.GetRequiredService<Shell>();
                 app.Resources = resources;
                 app.MainPage = shell;
 
@@ -48,8 +48,7 @@ public static class MauiMicroBuilderExtensions
                 }
 
                 return app;
-            })
-            .AddSingleton<Shell>(sp => sp.GetRequiredService<TShell>());
+            });
 
         builder.Services
             .AddSingleton<INavigation, DefaultNavigation>()

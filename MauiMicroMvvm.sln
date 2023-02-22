@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiMicroSample", "sample\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiMicroMvvm.Rx", "src\MauiMicroMvvm.Rx\MauiMicroMvvm.Rx.csproj", "{45A4D349-2170-4500-B076-E877DA6E015C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiMicroMvvm.Templates", "src\MauiMicroMvvm.Templates\MauiMicroMvvm.Templates.csproj", "{0803D0BA-65AB-4111-8202-B1E466347A65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,18 @@ Global
 		{45A4D349-2170-4500-B076-E877DA6E015C}.Release|x64.Build.0 = Release|Any CPU
 		{45A4D349-2170-4500-B076-E877DA6E015C}.Release|x86.ActiveCfg = Release|Any CPU
 		{45A4D349-2170-4500-B076-E877DA6E015C}.Release|x86.Build.0 = Release|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Debug|x64.Build.0 = Debug|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Debug|x86.Build.0 = Debug|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Release|x64.ActiveCfg = Release|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Release|x64.Build.0 = Release|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Release|x86.ActiveCfg = Release|Any CPU
+		{0803D0BA-65AB-4111-8202-B1E466347A65}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +82,7 @@ Global
 		{4094C24B-1A79-46FF-BC6C-33639A824BBE} = {CAF06AA9-3F4E-4E07-A7A8-726097784A21}
 		{66C0C28B-59E4-40B6-A6C1-BEECC107378E} = {B8FC7CB8-399C-41C6-8D6D-0358D7E4CC25}
 		{45A4D349-2170-4500-B076-E877DA6E015C} = {CAF06AA9-3F4E-4E07-A7A8-726097784A21}
+		{0803D0BA-65AB-4111-8202-B1E466347A65} = {CAF06AA9-3F4E-4E07-A7A8-726097784A21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {88111A1A-CBF1-447E-B8AF-0EF9432C51AC}

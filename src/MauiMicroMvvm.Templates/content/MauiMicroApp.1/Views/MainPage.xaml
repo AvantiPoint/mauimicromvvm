@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             micro:MauiMicro.Autowire="True"
+             xmlns:vm="clr-namespace:MauiMicroApp._1.ViewModels"
+             x:DataType="vm:MainViewModel"
+             x:Class="MauiMicroApp._1.Views.MainPage">
+
+  <ScrollView>
+    <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+      <Image Source="dotnet_bot.png"
+             SemanticProperties.Description="Cute dot net bot waving hi to you!"
+             HeightRequest="200"
+             HorizontalOptions="Center" />
+
+      <Label Text="Hello, World!"
+             SemanticProperties.HeadingLevel="Level1"
+             FontSize="32"
+             HorizontalOptions="Center" />
+
+      <Label Text="Welcome to Maui Micro!"
+             SemanticProperties.HeadingLevel="Level2"
+             SemanticProperties.Description="Welcome to Maui Micro"
+             FontSize="18"
+             HorizontalOptions="Center" />
+
+      <Button Text="{Binding Message}"
+              SemanticProperties.Hint="Counts the number of times you click"
+              Command="{Binding ClickCommand}"
+              HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
+  </ScrollView>
+
+</ContentPage>

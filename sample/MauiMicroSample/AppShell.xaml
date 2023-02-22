@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
     micro:MauiMicro.Autowire="True"
+    FlyoutBehavior="Flyout"
     xmlns:pages="clr-namespace:MauiMicroSample.Pages">
 
   <FlyoutItem Title="Main Page"
@@ -20,6 +21,14 @@
               Route="MessageDemoPage">
     <Tab>
       <ShellContent ContentTemplate="{DataTemplate pages:MessageDemoPage}" />
+    </Tab>
+  </FlyoutItem>
+
+  <FlyoutItem Title="Maui Influencers"
+              Icon="people.png"
+              Route="MauiInfluencersPage">
+    <Tab>
+      <ShellContent ContentTemplate="{DataTemplate pages:MauiInfluencersPage}" />
     </Tab>
   </FlyoutItem>
 
