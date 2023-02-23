@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="MauiMicroApp._1.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MauiMicroApp._1.Views"
-    Shell.FlyoutBehavior="Disabled">
+<Shell x:Class="MauiMicroApp._1.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+       Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+  <ShellContent Title="Home"
+                micro:MauiMicro.Route="MainPage" />
 
 </Shell>

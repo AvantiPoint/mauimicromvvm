@@ -26,6 +26,64 @@ public static class MauiMicro
     public static void SetSharedContext(BindableObject bindable, object? value) =>
         bindable.SetValue(SharedContextProperty, value);
 
+    public static readonly BindableProperty RouteProperty =
+        BindableProperty.CreateAttached("Route", typeof(string), typeof(MauiMicro), null, propertyChanged: OnRouteChanged);
+
+    public static string? GetRoute(BindableObject bindable) =>
+        (string?)bindable.GetValue(RouteProperty);
+
+    public static void SetRoute(BindableObject bindable, string? value) =>
+        bindable.SetValue(RouteProperty, value);
+
+    private static void OnRouteChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        var content = GetContent(bindable);
+        if (content is null)
+            return;
+
+        var route = GetRoute(bindable);
+        if (route is null)
+            return;
+
+        content.Route = route;
+        SetContentTempalte(content, route);
+    }
+
+    private static void SetContentTempalte(ShellContent content, string route)
+    {
+        content.ContentTemplate = new DataTemplate(() => CreateView(route));
+    }
+
+    private static Page CreateView(string route)
+    {
+        var handler = Shell.Current.Handler;
+        if (handler is null)
+            throw new Exception("Handler is null");
+        var factory = handler.MauiContext!.Services.GetRequiredService<IViewFactory>();
+        return (Page)factory.CreateView(route);
+    }
+
+    private static ShellContent GetContent(BindableObject bindable)
+    {
+        if (bindable is ShellContent content)
+            return content;
+
+        else if (bindable is Tab tab)
+        {
+            if(tab.CurrentItem is null)
+            {
+                content = new ShellContent();
+                tab.Items.Add(content);
+                tab.CurrentItem = content;
+                return content;
+            }
+
+            return tab.CurrentItem;
+        }
+
+        throw new InvalidOperationException($"The Route was used on an unsupported type '{bindable.GetType().FullName}'.");
+    }
+
     private static void OnMvvmChanged(BindableObject bindable, object? oldValue, object? newValue)
     {
         if (newValue is bool autowire && autowire)
