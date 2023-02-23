@@ -5,7 +5,7 @@
     <UseMaui>true</UseMaui>
     <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Description>MauiMicroMvvm.Rx is the perfect companion for people who want love Reactive design &amp; want to couple it with MauiMicro. With MauiMicro Rx you get an Observables first base ViewModel that let's you design your code around an observable for the App &amp; View lifecycles.</Description>
+    <Description>MauiMicroMvvm.Rx is the perfect companion for people who love Reactive design &amp; want to couple it with MauiMicro. With MauiMicro Rx you get an Observables first base ViewModel that let's you design your code around an observable for the App &amp; View lifecycles.</Description>
     <PackageTags>dotnet-maui;mvvm;mauimicro;reactive;rx</PackageTags>
     <PackageId>AvantiPoint.$(AssemblyName)</PackageId>
     <Title>$(AssemblyName)</Title>

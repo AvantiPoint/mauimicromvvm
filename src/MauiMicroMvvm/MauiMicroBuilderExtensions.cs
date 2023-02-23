@@ -51,6 +51,7 @@ public static class MauiMicroBuilderExtensions
             });
 
         builder.Services
+            .AddSingleton<IViewFactory, ViewFactory>()
             .AddSingleton<INavigation, DefaultNavigation>()
             .AddSingleton<IPageDialogs, PageDialogs>()
             .AddScoped<ViewModelContext>();
@@ -72,12 +73,17 @@ public static class MauiMicroBuilderExtensions
         if (string.IsNullOrEmpty(key))
             key = typeof(TView).Name;
 
-        MvvmMapper.Register(key, typeof(TView), typeof(TViewModel));
-
         if (typeof(TView).IsAssignableTo(typeof(Page)))
             Routing.RegisterRoute(key, typeof(TView));
 
-        return services.AddTransient<TView>()
+        return services.AddTransient<TView>(sp =>
+        {
+            var viewFactory = sp.GetRequiredService<IViewFactory>();
+            var view = viewFactory.CreateView<TView>();
+            viewFactory.Configure(view);
+            return view;
+        })
+            .AddSingleton(new ViewMapping(key, typeof(TView), typeof(TViewModel)))
             .AddTransient<TViewModel>();
     }
 }
