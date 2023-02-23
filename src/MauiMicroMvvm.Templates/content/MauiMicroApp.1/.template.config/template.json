@@ -55,7 +55,7 @@
       "type": "parameter",
       "datatype": "bool",
       "defaultValue": "true",
-      "displayName": "Use Reactive ViewModel"
+      "displayName": "Use ReactiveUI"
     },
     "MicrosoftLoggingVersion": {
       "type": "generated",
@@ -80,5 +80,17 @@
         ]
       }
     }
-  }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "!Reactive",
+          "exclude": [
+            "**/FodyWeavers.*"
+          ]
+        }
+      ]
+    }
+  ]
 }
