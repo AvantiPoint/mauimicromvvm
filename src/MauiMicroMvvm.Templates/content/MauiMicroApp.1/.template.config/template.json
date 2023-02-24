@@ -25,23 +25,28 @@
   ],
   "symbols": {
     "TargetFramework": {
+      "displayName": "Framework",
       "type": "parameter",
       "datatype": "choice",
-      "displayName": "Target Framework",
-      "defaultValue": "net7.0",
+      "enableQuotelessLiterals": true,
       "replaces": "$dotnetversion$",
+      "defaultValue": "net7.0",
+      "description": "Target Framework",
       "choices": [
         {
           "choice": "net6.0",
-          "displayName": ".NET 6.0 (Long Term Support)"
+          "displayName": ".NET 6.0 (Long Term Support)",
+          "description": "Target .NET 6.0 (Long Term Support)"
         },
         {
           "choice": "net7.0",
-          "displayName": ".NET 7.0 (Standard Term Support)"
+          "displayName": ".NET 7.0 (Standard Term Support)",
+          "description": "Target .NET 7.0 (Standard Term Support)"
         },
         {
           "choice": "net8.0",
-          "displayName": ".NET 8.0 (Preview)"
+          "displayName": ".NET 8.0 (Preview)",
+          "description": "Target .NET 8.0 (Preview)"
         }
       ]
     },
@@ -54,8 +59,8 @@
     "Reactive": {
       "type": "parameter",
       "datatype": "bool",
-      "defaultValue": "true",
-      "displayName": "Use Reactive ViewModel"
+      "defaultValue": "false",
+      "displayName": "Use ReactiveUI"
     },
     "MicrosoftLoggingVersion": {
       "type": "generated",
@@ -63,22 +68,34 @@
       "replaces": "$MicrosoftLoggingVersion$",
       "parameters": {
         "evaluator": "C++",
-        "datatype": "text",
+        "datatype": "string",
         "cases": [
           {
-            "condition": "TargetFramework == 'net6.0'",
+            "condition": "(TargetFramework == 'net6.0')",
             "value": "6.0.0"
           },
           {
-            "condition": "TargetFramework == 'net7.0'",
+            "condition": "(TargetFramework == 'net7.0')",
             "value": "7.0.0"
           },
           {
-            "condition": "TargetFramework == 'net8.0'",
+            "condition": "(TargetFramework == 'net8.0')",
             "value": "8.0.0-preview.1.23110.8"
           }
         ]
       }
     }
-  }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "!Reactive",
+          "exclude": [
+            "**/FodyWeavers.*"
+          ]
+        }
+      ]
+    }
+  ]
 }

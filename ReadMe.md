@@ -15,13 +15,13 @@ MauiMicro builds on top of Shell for Navigation while exposing an abstraction la
 - You do not have to use the MauiMicroViewModel... you can use any base class you want. If you implement the MauiMicro interfaces you'll continue to get support for the App/Page Lifecycle events.
 - You're not limited to Views being Pages... why because if you understand what MVVM means then you know understand a MVVM View is a MAUI VisualElement and not strictly a Page.
 - You're not required to make your page inherit from some base class that I made... you can use any base Page type that you want as long as it works with Shell I don't care.
-- You can pick and choose what you want to wire up and what you don't want to wire up.
+- By default we will try to autowire your Views that you have mapped for navigation but you can disable this if you want.
 
 ## Using the framework
 
 First you need to be sure to call the `UseMauiMicroMvvm` extension method on the `MauiApplicationBuilder`. This will add a couple of services to the IServiceCollection that you might need to manage Navigation or use the native dialogs that would normally be called from the Shell or Page, only this is exposed as an abstracted service to maintain the MVVM pattern. Unless you specifically need to override code in the Application, you can simply specify the AppShell and any resource paths like those in the sample below, and MauiMicro will provide and initialize the application for you.
 
-Next you need to Map the Views <--> ViewModels. You can optionally provide a navigation key if you are registering a Page. This mapping will work for ANY VisualElement. Note that there currently is no support for sharing a context between the ViewModel for the Page and a ViewModel for a View on the page.
+Next you need to Map the Views <--> ViewModels. You can optionally provide a navigation key if you are registering a Page. This mapping will work for ANY VisualElement.
 
 ```cs
 var builder = MauiApp.CreateBuilder();
@@ -40,14 +40,16 @@ return builder.Build();
 
 ### Autowire Your Views
 
-Once Views have been mapped to ViewModels you can do this easily as shown below. Unlike most other frameworks MauiMicro understands that proper MVVM should let you do this with any Visual Element so you can do this anywhere you want...
+Once Views have been mapped to ViewModels, the Autowire will happen automatically for Pages that are resolved with Dependency Injection. If you want to disable this you can set the `MauiMicro.Autowire` property to false on the View.
 
 ```xaml
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
-             micro:MauiMicro.Autowire="True"
+             micro:MauiMicro.Autowire="False"
              x:Class="MauiMicroSample.Pages.MainPage">
 ```
+
+In the event that you have a type which is created without Dependency Injection, you can still use the Autowire feature by setting the `MauiMicro.Autowire` property to true on the View. This works on ANY VisualElement as long as you have a mapping for the ViewModel.
 
 ```xaml
 <StackLayout xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -55,6 +57,8 @@ Once Views have been mapped to ViewModels you can do this easily as shown below.
              micro:MauiMicro.Autowire="True"
              x:Class="MauiMicroSample.Controls.MyControl">
 ```
+
+You can additionally choose to provide a ViewModel for your Shell however you will need to set the `MauiMicro.Autowire` property to true on the Shell.
 
 ```xaml
 <Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -81,9 +85,43 @@ Next be sure to set the property on your Page, and add the control somewhere on 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
              xmlns:controls="clr-namespace:MauiMicroSample.Controls"
-             micro:MauiMicro.Autowire="True"
              micro:MauiMicro.SharedContext="{Binding MyProperty}"
              x:Class="MauiMicroSample.Pages.MainPage">
   <controls:MyControl />
 </ContentPage>
+```
+
+## View Resolution in the Shell
+
+By default .NET MAUI supports Dependency Injection with the DataTemplate XAML Extension, and MauiMicro supports this as well. 
+
+```xaml
+<FlyoutItem Title="Main Page"
+            Icon="home.png"
+            Route="MainPage">
+  <Tab>
+    <ShellContent ContentTemplate="{DataTemplate pages:MainPage}" />
+  </Tab>
+</FlyoutItem>
+```
+
+For those that want something a little simpler, you can actually skip putting your route on the elements and then following up with the type you would like for the ContentTemplate. You can instead just use the `MauiMicro.Route` property on the ShellContent. This will automatically set the ContentTemplate and ShellContent.Route for you.
+
+```xaml
+<FlyoutItem Title="Maui Influencers"
+            Icon="people.png">
+  <Tab>
+    <ShellContent micro:MauiMicro.Route="MauiInfluencersPage" />
+  </Tab>
+</FlyoutItem>
+```
+
+For those who want to type even less, MauiMicro still has this covered with the `MauiMicro.Route` also supporting Tabs as shown here meaning you can just put it on the tab and the ShellContent will be created for you.
+
+```xaml
+
+<FlyoutItem Title="Message Demo"
+            Icon="messages.png">
+  <Tab micro:MauiMicro.Route="MessageDemoPage" />
+</FlyoutItem>
 ```

@@ -12,14 +12,24 @@ public class MainViewModel : MauiMicroViewModel
         : base(context)
     {
         _screenReader = screenReader;
+#if Reactive
+        Message = "Click Me";
+        ClickCommand = ReactiveCommand.Create(OnClickCommand);
+#else
         ClickCommand = new Command(OnClickCommand);
+#endif
     }
 
+#if Reactive
+    [Reactive]
+    public string Message { get; set; }
+#else
     public string Message
     {
         get => Get<string>("Click Me");
         set => Set(value);
     }
+#endif
 
     public ICommand ClickCommand { get; }
 

@@ -9,7 +9,7 @@
        x:Class="MauiMicroSample.Modules.MessageDisplay">
   <VerticalStackLayout VerticalOptions="Center"
                        HorizontalOptions="Center">
-    <Label Text="Message Display"
+    <Label Text="Module with Shared Context"
            FontAttributes="Bold" />
     <Label Text="{Binding Message}" />
   </VerticalStackLayout>

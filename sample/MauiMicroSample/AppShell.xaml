@@ -17,18 +17,14 @@
   </FlyoutItem>
 
   <FlyoutItem Title="Message Demo"
-              Icon="messages.png"
-              Route="MessageDemoPage">
-    <Tab>
-      <ShellContent ContentTemplate="{DataTemplate pages:MessageDemoPage}" />
-    </Tab>
+              Icon="messages.png">
+    <Tab micro:MauiMicro.Route="MessageDemoPage" />
   </FlyoutItem>
 
   <FlyoutItem Title="Maui Influencers"
-              Icon="people.png"
-              Route="MauiInfluencersPage">
+              Icon="people.png">
     <Tab>
-      <ShellContent ContentTemplate="{DataTemplate pages:MauiInfluencersPage}" />
+      <ShellContent micro:MauiMicro.Route="MauiInfluencersPage" />
     </Tab>
   </FlyoutItem>
 
