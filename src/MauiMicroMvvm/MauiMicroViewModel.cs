@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using PropertyChangingEventArgs = System.ComponentModel.PropertyChangingEventArgs;
@@ -6,10 +6,16 @@ using PropertyChangingEventHandler = System.ComponentModel.PropertyChangingEvent
 
 namespace MauiMicroMvvm;
 
-public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable
+public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDispatcherAware
 {
     private readonly Dictionary<string, object> _properties = new ();
     private readonly Lazy<ILogger> _lazyLogger;
+    private IDispatcher _dispatcher;
+    IDispatcher IDispatcherAware.Dispatcher
+    {
+        get => _dispatcher;
+        set => _dispatcher = value;
+    }
 
     protected MauiMicroViewModel(ViewModelContext context)
     {
@@ -49,6 +55,38 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
     public virtual void OnSleep() { }
 
     protected virtual void OnParametersSet() { }
+
+    protected IDispatcherTimer CreateTimer()
+    {
+        if (_dispatcher is null)
+            throw new NullReferenceException("The Dispatcher has not been set.");
+
+        return _dispatcher.CreateTimer();
+    }
+
+    protected bool InvokeOnMainThread(Action action)
+    {
+        if (_dispatcher is null)
+            throw new NullReferenceException("The Dispatcher has not been set.");
+
+        return _dispatcher.Dispatch(action);
+    }
+
+    protected Task InvokeOnMainThreadAsync(Action action)
+    {
+        if (_dispatcher is null)
+            throw new NullReferenceException("The Dispatcher has not been set.");
+
+        return _dispatcher.DispatchAsync(action);
+    }
+
+    protected Task InvokeOnMainThreadAsync(Func<Task> funcTask)
+    {
+        if (_dispatcher is null)
+            throw new NullReferenceException("The Dispatcher has not been set.");
+
+        return _dispatcher.DispatchAsync(funcTask);
+    }
 
     protected T Get<T>(T defaultValue = default, [CallerMemberName]string propertyName = null)
     {

@@ -94,6 +94,8 @@ internal class ViewFactory : IViewFactory
             return;
 
         view.BindingContext = _services.GetRequiredService(mapping.ViewModel);
+        if (view.BindingContext is IDispatcherAware dispatcherAware)
+            dispatcherAware.Dispatcher = view.Dispatcher;
     }
 
     private ViewMapping? GetViewMapping(VisualElement view)

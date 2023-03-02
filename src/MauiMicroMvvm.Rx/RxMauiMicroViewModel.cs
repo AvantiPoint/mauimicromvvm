@@ -6,7 +6,7 @@ using ReactiveUI;
 
 namespace MauiMicroMvvm;
 
-public class RxMauiMicroViewModel : ReactiveObject, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDisposable
+public class RxMauiMicroViewModel : ReactiveObject, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDisposable, IDispatcherAware
 {
     private readonly Subject<AppLifecycleState> _applifecycleState;
     private readonly Subject<ViewLifecycleState> _viewLifecycleState;
@@ -15,6 +15,12 @@ public class RxMauiMicroViewModel : ReactiveObject, IViewModelActivation, IViewL
     protected ObservableAsPropertyHelper<bool> IsBusyHelper;
     private readonly ObservableAsPropertyHelper<bool> _isNotBusyHelper;
     protected readonly CompositeDisposable Disposables;
+    private IDispatcher _dispatcher;
+    IDispatcher IDispatcherAware.Dispatcher
+    {
+        get => _dispatcher;
+        set => _dispatcher = value;
+    }
 
     public RxMauiMicroViewModel(ViewModelContext context)
     {
@@ -73,6 +79,38 @@ public class RxMauiMicroViewModel : ReactiveObject, IViewModelActivation, IViewL
         _queryParameters.OnNext(query);
 
     protected virtual void Dispose(bool disposing) { }
+
+    protected IDispatcherTimer CreateTimer()
+    {
+        if (_dispatcher is null)
+            throw new NullReferenceException("The Dispatcher has not been set.");
+
+        return _dispatcher.CreateTimer();
+    }
+
+    protected bool InvokeOnMainThread(Action action)
+    {
+        if (_dispatcher is null)
+            throw new NullReferenceException("The Dispatcher has not been set.");
+
+        return _dispatcher.Dispatch(action);
+    }
+
+    protected Task InvokeOnMainThreadAsync(Action action)
+    {
+        if (_dispatcher is null)
+            throw new NullReferenceException("The Dispatcher has not been set.");
+
+        return _dispatcher.DispatchAsync(action);
+    }
+
+    protected Task InvokeOnMainThreadAsync(Func<Task> funcTask)
+    {
+        if (_dispatcher is null)
+            throw new NullReferenceException("The Dispatcher has not been set.");
+
+        return _dispatcher.DispatchAsync(funcTask);
+    }
 
     public void Dispose()
     {
