@@ -21,10 +21,7 @@ public static class MauiMicroBuilderExtensions
             .AddSingleton<TApp>()
             .AddSingleton<IApplication>(sp =>
             {
-                var app = sp.GetRequiredService<TApp>();
-                var shell = sp.GetRequiredService<Shell>();
-                app.Resources = resources;
-                app.MainPage = shell;
+                var app = sp.GetRequiredService<TApp>();                
 
                 if (mergedDictionaries.Any())
                 {
@@ -44,9 +41,17 @@ public static class MauiMicroBuilderExtensions
 {string.Join('\n', qualifiedResources)}
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>";
-                    app.Resources.LoadFromXaml(xaml);
+                    
+                    app.Resources.LoadFromXaml(xaml);                    
                 }
 
+                if (resources != null && resources.Keys.Any())
+                {
+                    app.Resources.Add(resources);
+                }
+
+                var shell = sp.GetRequiredService<Shell>();
+                app.MainPage = shell;
                 return app;
             });
 
