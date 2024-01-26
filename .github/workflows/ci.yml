@@ -15,9 +15,6 @@ on:
 jobs:
   build:
     uses: avantipoint/workflow-templates/.github/workflows/dotnet-build.yml@master
-    permissions:
-      statuses: write
-      checks: write
     with:
       name: MauiMicroMvvm
       solution-path: build.slnf
