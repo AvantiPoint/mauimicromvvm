@@ -11,9 +11,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{B8FC7C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiMicroSample", "sample\MauiMicroSample\MauiMicroSample.csproj", "{66C0C28B-59E4-40B6-A6C1-BEECC107378E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiMicroMvvm.Rx", "src\MauiMicroMvvm.Rx\MauiMicroMvvm.Rx.csproj", "{45A4D349-2170-4500-B076-E877DA6E015C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiMicroMvvm.Rx", "src\MauiMicroMvvm.Rx\MauiMicroMvvm.Rx.csproj", "{45A4D349-2170-4500-B076-E877DA6E015C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiMicroMvvm.Templates", "src\MauiMicroMvvm.Templates\MauiMicroMvvm.Templates.csproj", "{0803D0BA-65AB-4111-8202-B1E466347A65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiMicroMvvm.Templates", "src\MauiMicroMvvm.Templates\MauiMicroMvvm.Templates.csproj", "{0803D0BA-65AB-4111-8202-B1E466347A65}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{58DDD03C-E4B7-431A-8BC4-B8A8199C3DCD}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

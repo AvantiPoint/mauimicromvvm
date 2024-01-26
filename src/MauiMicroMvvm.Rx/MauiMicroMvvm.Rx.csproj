@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
     <UseMaui>true</UseMaui>
     <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="18.4.22" />
+    <PackageReference Include="ReactiveUI" Version="19.5.39" />
   </ItemGroup>
 
   <ItemGroup>
