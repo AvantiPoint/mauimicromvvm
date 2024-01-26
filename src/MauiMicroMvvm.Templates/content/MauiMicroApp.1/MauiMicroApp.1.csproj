@@ -47,7 +47,7 @@
     <!--#if Reactive -->
     <Using Include="ReactiveUI" />
     <Using Include="ReactiveUI.Fody.Helpers" />
-    <PackageReference Include="ReactiveUI.Fody" Version="18.4.22" />
+    <PackageReference Include="ReactiveUI.Fody" Version="19.5.39" />
     <PackageReference Include="AvantiPoint.MauiMicroMvvm.Rx" Version="$MauiMicroVersion$" />
     <!--#else -->
     <PackageReference Include="AvantiPoint.MauiMicroMvvm" Version="$MauiMicroVersion$" />

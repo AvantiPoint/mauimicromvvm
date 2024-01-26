@@ -8,7 +8,7 @@ namespace MauiMicroMvvm;
 
 public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable
 {
-    private readonly Dictionary<string, object> _properties = new ();
+    private readonly Dictionary<string, object> _properties = [];
     private readonly Lazy<ILogger> _lazyLogger;
 
     protected MauiMicroViewModel(ViewModelContext context)
