@@ -17,7 +17,6 @@
 
     <!-- App Identifier -->
     <ApplicationId>$ApplicationId$</ApplicationId>
-    <ApplicationIdGuid>683037c3-6415-40f7-a541-bdc57964b0d2</ApplicationIdGuid>
 
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -52,6 +51,8 @@
     <!--#else -->
     <PackageReference Include="AvantiPoint.MauiMicroMvvm" Version="$MauiMicroVersion$" />
     <!--#endif -->
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="$MicrosoftLoggingVersion$" />
   </ItemGroup>
 

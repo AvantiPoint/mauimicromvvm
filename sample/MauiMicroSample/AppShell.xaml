@@ -16,6 +16,11 @@
     </Tab>
   </FlyoutItem>
 
+  <FlyoutItem Title="Dialog Demo"
+              Icon="dialog.png">
+    <Tab micro:MauiMicro.Route="DialogDemo" />
+  </FlyoutItem>
+
   <FlyoutItem Title="Message Demo"
               Icon="messages.png">
     <Tab micro:MauiMicro.Route="MessageDemoPage" />

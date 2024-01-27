@@ -30,7 +30,7 @@
       "datatype": "choice",
       "enableQuotelessLiterals": true,
       "replaces": "$dotnetversion$",
-      "defaultValue": "net7.0",
+      "defaultValue": "net8.0",
       "description": "Target Framework",
       "choices": [
         {

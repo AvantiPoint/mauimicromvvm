@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiMicroSample.Pages.DialogDemo"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             xmlns:vm="clr-namespace:MauiMicroSample.ViewModels"
+             micro:MauiMicro.Autowire="True"
+             x:DataType="vm:DialogDemoViewModel"
+             Title="Dialog Demo">
+  <VerticalStackLayout Spacing="5"
+                       Padding="10">
+    <Label Text="Dialog Demo" Style="{DynamicResource Title}" />
+    <Button Text="Display Alert" Command="{Binding ShowAlertCommand}" />
+    <Button Text="Display ActionSheet" Command="{Binding ShowActionSheetCommand}" />
+  </VerticalStackLayout>
+</ContentPage>

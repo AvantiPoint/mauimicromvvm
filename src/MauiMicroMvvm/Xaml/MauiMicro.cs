@@ -46,10 +46,10 @@ public static class MauiMicro
             return;
 
         content.Route = route;
-        SetContentTempalte(content, route);
+        SetContentTemplate(content, route);
     }
 
-    private static void SetContentTempalte(ShellContent content, string route)
+    private static void SetContentTemplate(ShellContent content, string route)
     {
         content.ContentTemplate = new DataTemplate(() => CreateView(route));
     }
