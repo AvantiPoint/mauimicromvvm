@@ -34,7 +34,7 @@ jobs:
       - name: Install Templates
         run: dotnet new install Artifacts/AvantiPoint.MauiMicroMvvm.Templates.*.nupkg
       - name: Add Local Source
-        run: dotnet nuget add source ./Artifacts --name Artifacts
+        run: dotnet nuget add source ${{ github.workspace }}/Artifacts --name Artifacts
       - name: Create Test Project
         run: dotnet new maui-micro -o TestProject
       - name: Restore Workloads
