@@ -18,3 +18,28 @@ jobs:
       name: MauiMicroMvvm
       solution-path: build.slnf
       install-workload: maui
+
+  validate:
+    needs: [build]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.0.x
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: NuGet
+          path: Artifacts
+      - name: Install Templates
+        run: dotnet new install Artifacts/AvantiPoint.MauiMicroMvvm.Templates.*.nupkg
+      - name: Add Local Source
+        run: dotnet nuget add source ./Artifacts --name Artifacts
+      - name: Create Test Project
+        run: dotnet new maui-micro -o TestProject
+      - name: Restore Workloads
+        run: dotnet workload restore
+        working-directory: TestProject
+      - name: Build Project
+        run: dotnet build
+        working-directory: TestProject
