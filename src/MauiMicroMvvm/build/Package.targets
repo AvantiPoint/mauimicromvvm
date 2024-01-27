@@ -1,0 +1,5 @@
+﻿<Project>
+  <ItemGroup Condition=" '$(ImplicitUsings)' == 'true' OR '$(ImplicitUsings)' == 'enable' ">
+    <Using Include="MauiMicroMvvm"/>
+  </ItemGroup>
+</Project>
