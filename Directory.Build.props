@@ -18,6 +18,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <NoWarn>$(NoWarn);NU1507</NoWarn>
+    <IsPackable>$(MSBuildProjectName.Contains('MauiMicroMvvm'))</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
