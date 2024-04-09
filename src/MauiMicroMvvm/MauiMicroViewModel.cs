@@ -68,16 +68,37 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
     protected bool Set<T>(T value, [CallerMemberName]string? propertyName = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(propertyName);
-        if (EqualityComparer<T>.Default.Equals(Get<T>(propertyName: propertyName), value))
+
+        var isSet = _properties.ContainsKey(propertyName);
+        if (isSet && EqualityComparer<T>.Default.Equals(Get<T>(propertyName: propertyName), value))
             return false;
 
-        PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-        _properties[propertyName] = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        RaisePropertyChanging(propertyName);
+
+        if (value is null && isSet)
+        {
+            _properties.Remove(propertyName);
+        }
+        else if (value is not null)
+        {
+            _properties[propertyName] = value;
+        }
+
+        RaisePropertyChanged(propertyName);
         return true;
     }
 
-    protected bool Set<T>(T value, Action callback, [CallerMemberName]string propertyName = null)
+    protected virtual void RaisePropertyChanging(string propertyName)
+    {
+        PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+    }
+
+    protected virtual void RaisePropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected bool Set<T>(T value, Action callback, [CallerMemberName]string? propertyName = null)
     {
         if (Set(value, propertyName))
         {
