@@ -37,8 +37,8 @@ jobs:
         run: dotnet nuget add source ${{ github.workspace }}/Artifacts --name Artifacts
       - name: Create Test Project
         run: dotnet new maui-micro -o TestProject
-      - name: Restore Workloads
-        run: dotnet workload restore
+      - name: Workload Install
+        run: dotnet workload install maui
         working-directory: TestProject
       - name: Build Project
         run: dotnet build
