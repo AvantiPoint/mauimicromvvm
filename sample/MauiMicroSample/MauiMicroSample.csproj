@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>$(DotNetVersion)-android;$(DotNetVersion)-ios;$(DotNetVersion)-maccatalyst</TargetFrameworks>
@@ -16,7 +16,6 @@
 
     <!-- App Identifier -->
     <ApplicationId>com.avantipoint.mauimicro</ApplicationId>
-    <ApplicationIdGuid>CE320681-9974-4D30-B5AB-3FC8834733FD</ApplicationIdGuid>
 
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -49,10 +48,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
-    <PackageReference Include="Refit" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="Refit" />
   </ItemGroup>
 
   <ItemGroup>
