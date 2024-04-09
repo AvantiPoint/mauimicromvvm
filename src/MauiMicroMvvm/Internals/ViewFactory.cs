@@ -1,7 +1,9 @@
 ﻿#nullable enable
+using MauiMicroMvvm.Behaviors;
+
 namespace MauiMicroMvvm.Internals;
 
-public class ViewFactory(IServiceProvider services, IEnumerable<ViewMapping> mappings) : IViewFactory
+public class ViewFactory(IServiceProvider services, IEnumerable<ViewMapping> mappings, IBehaviorFactory behaviorFactory) : IViewFactory
 {
     public static readonly BindableProperty NavigationKeyProperty =
         BindableProperty.CreateAttached("NavigationKey", typeof(string), typeof(ViewFactory), null);
@@ -37,6 +39,8 @@ public class ViewFactory(IServiceProvider services, IEnumerable<ViewMapping> map
     {
         if(view.BindingContext is null && (!view.IsSet(Xaml.MauiMicro.AutowireProperty) || Xaml.MauiMicro.GetAutowire(view)))
             SetBindingContext(view);
+
+        behaviorFactory.ApplyBehaviors(view);
 
         if (view is Shell || view is Window || view.Behaviors.OfType<AppLifecycleBehavior>().Any())
             return view;

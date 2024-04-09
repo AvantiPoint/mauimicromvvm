@@ -1,4 +1,5 @@
 using MauiMicroMvvm;
+using MauiMicroMvvm.Behaviors;
 using MauiMicroMvvm.Internals;
 using INavigation = MauiMicroMvvm.INavigation;
 
@@ -13,6 +14,7 @@ public static class MauiMicroBuilderExtensions
             .AddSingleton<TShell>()
             .AddSingleton<IWindowCreator, WindowCreator<TShell>>()
             .AddSingleton<IViewFactory, ViewFactory>()
+            .AddSingleton<IBehaviorFactory, BehaviorFactory>()
             .AddSingleton<INavigation, DefaultNavigation>()
             .AddSingleton<IPageDialogs, PageDialogs>()
             .AddScoped<ViewModelContext>();
@@ -101,5 +103,27 @@ public static class MauiMicroBuilderExtensions
         })
             .AddSingleton(new ViewMapping(key, typeof(TView), typeof(TViewModel)))
             .AddTransient<TViewModel>();
+    }
+
+    public static IServiceCollection ApplyBehavior<TView, TBehavior>(this IServiceCollection services)
+        where TView : VisualElement
+        where TBehavior : Behavior
+    {
+        return services.AddTransient<TBehavior>()
+            .AddSingleton<RegisteredBehavior<TView, TBehavior>>();
+    }
+
+    public static IServiceCollection ApplyBehavior<TView>(this IServiceCollection services, Action<IServiceProvider, TView> onAttached, Action<IServiceProvider, TView>? onDetached = null)
+        where TView : VisualElement
+    {
+        onDetached ??= delegate { };
+        return services.AddSingleton(new DelegateViewBehavior<TView>(onAttached, onDetached));
+    }
+
+    public static IServiceCollection ApplyBehavior<TView>(this IServiceCollection services, Action<TView> onAttached, Action<TView>? onDetached = null)
+        where TView : VisualElement
+    {
+        onDetached ??= delegate { };
+        return services.AddSingleton(new DelegateViewBehavior<TView>((_, view) => onAttached(view), (_, view) => onDetached(view)));
     }
 }
