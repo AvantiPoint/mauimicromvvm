@@ -25,8 +25,8 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
 
     protected IPageDialogs PageDialogs { get; }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-    public event PropertyChangingEventHandler PropertyChanging;
+    public event PropertyChangedEventHandler? PropertyChanged;
+    public event PropertyChangingEventHandler? PropertyChanging;
 
     public bool IsBusy
     {
@@ -50,17 +50,25 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
 
     protected virtual void OnParametersSet() { }
 
-    protected T Get<T>(T defaultValue = default, [CallerMemberName]string propertyName = null)
+    protected T Get<T>(T? defaultValue = default, [CallerMemberName]string? propertyName = null)
     {
-        if (_properties.ContainsKey(propertyName))
-            return (T)_properties[propertyName];
+        ArgumentException.ThrowIfNullOrEmpty(propertyName);
+        if (_properties.TryGetValue(propertyName, out var value) && value is T valueAsT)
+            return valueAsT;
 
-        return defaultValue;
+        if (defaultValue is null && typeof(T).IsValueType)
+            defaultValue = Activator.CreateInstance<T>();
+
+        if (Nullable.GetUnderlyingType(typeof(T)) != null)
+            ArgumentNullException.ThrowIfNull(defaultValue);
+
+        return defaultValue!;
     }
 
-    protected bool Set<T>(T value, [CallerMemberName]string propertyName = null)
+    protected bool Set<T>(T value, [CallerMemberName]string? propertyName = null)
     {
-        if(EqualityComparer<T>.Default.Equals(Get<T>(propertyName: propertyName), value))
+        ArgumentException.ThrowIfNullOrEmpty(propertyName);
+        if (EqualityComparer<T>.Default.Equals(Get<T>(propertyName: propertyName), value))
             return false;
 
         PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
