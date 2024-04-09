@@ -6,18 +6,33 @@ namespace Microsoft.Maui.Hosting;
 
 public static class MauiMicroBuilderExtensions
 {
+    public static MauiAppBuilder UseMauiMicroMvvm<TShell>(this MauiAppBuilder builder)
+        where TShell : Shell
+    {
+        builder.Services
+            .AddSingleton<TShell>()
+            .AddSingleton<IWindowCreator, WindowCreator<TShell>>()
+            .AddSingleton<IViewFactory, ViewFactory>()
+            .AddSingleton<INavigation, DefaultNavigation>()
+            .AddSingleton<IPageDialogs, PageDialogs>()
+            .AddScoped<ViewModelContext>();
+        return builder;
+    }
+
+    [Obsolete("Use `UseMauiMicroMvvm<TShell>()` instead.")]
     public static MauiAppBuilder UseMauiMicroMvvm<TApp, TShell>(this MauiAppBuilder builder, params string[] mergedDictionaries)
         where TApp : Application
         where TShell : Shell =>
-        builder.UseMauiMicroMvvm<TApp, TShell>(new ResourceDictionary(), mergedDictionaries);
+        builder.UseMauiMicroMvvm<TApp, TShell>([], mergedDictionaries);
 
+    [Obsolete("Use `UseMauiMicroMvvm<TShell>()` instead.")]
     public static MauiAppBuilder UseMauiMicroMvvm<TApp, TShell>(this MauiAppBuilder builder, ResourceDictionary resources, params string[] mergedDictionaries)
         where TApp : Application
         where TShell : Shell
     {
         builder.UseMauiApp<TApp>();
 
-        builder.Services.AddSingleton<Shell, TShell>()
+        builder.Services
             .AddSingleton<TApp>()
             .AddSingleton<IApplication>(sp =>
             {
@@ -50,23 +65,19 @@ public static class MauiMicroBuilderExtensions
                     app.Resources.Add(resources);
                 }
 
-                var shell = sp.GetRequiredService<Shell>();
-                app.MainPage = shell;
                 return app;
             });
 
-        builder.Services
-            .AddSingleton<IViewFactory, ViewFactory>()
-            .AddSingleton<INavigation, DefaultNavigation>()
-            .AddSingleton<IPageDialogs, PageDialogs>()
-            .AddScoped<ViewModelContext>();
-        return builder;
+        return builder
+            .UseMauiMicroMvvm<TShell>();
     }
 
+    [Obsolete("Use `UseMauiMicroMvvm<TShell>()` instead.")]
     public static MauiAppBuilder UseMauiMicroMvvm<TShell>(this MauiAppBuilder builder, params string[] mergedDictionaries)
         where TShell : Shell =>
-        builder.UseMauiMicroMvvm<TShell>(new ResourceDictionary(), mergedDictionaries);
+        builder.UseMauiMicroMvvm<TShell>([], mergedDictionaries);
 
+    [Obsolete("Use `UseMauiMicroMvvm<TShell>()` instead.")]
     public static MauiAppBuilder UseMauiMicroMvvm<TShell>(this MauiAppBuilder builder, ResourceDictionary resources, params string[] mergedDictionaries)
         where TShell : Shell =>
         builder.UseMauiMicroMvvm<Application, TShell>(resources, mergedDictionaries);

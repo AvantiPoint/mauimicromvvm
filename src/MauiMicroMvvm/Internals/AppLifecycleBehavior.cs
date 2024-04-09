@@ -98,16 +98,26 @@ public class AppLifecycleBehavior : Behavior
     private void OnAppearing(object? sender, EventArgs e)
     {
         if (!_didAppear)
+        {
             MvvmHelpers.InvokeViewViewModelAction<IViewModelActivation>(View, x => x.OnFirstLoad());
+        }
+
         _didAppear = true;
 
-        MvvmHelpers.InvokeViewViewModelAction<IViewLifecycle>(View, x => x.OnAppearing());
+        if (!_isVisible)
+        {
+            MvvmHelpers.InvokeViewViewModelAction<IViewLifecycle>(View, x => x.OnAppearing());
+        }
+
         _isVisible = true;
     }
 
     private void OnDisappearing(object? sender, EventArgs e)
     {
-        MvvmHelpers.InvokeViewViewModelAction<IViewLifecycle>(View, x => x.OnDisappearing());
+        if (_isVisible)
+        {
+            MvvmHelpers.InvokeViewViewModelAction<IViewLifecycle>(View, x => x.OnDisappearing());
+        }
 
         _isVisible = false;
     }
