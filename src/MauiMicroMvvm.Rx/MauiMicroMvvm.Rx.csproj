@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>$(DotNetVersion)</TargetFramework>
@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="19.5.39" />
+    <PackageReference Include="ReactiveUI" />
   </ItemGroup>
 
   <ItemGroup>

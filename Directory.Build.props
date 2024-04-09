@@ -14,6 +14,8 @@
     <RepositoryUrl>https://github.com/AvantiPoint/mauimicromvvm.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/AvantiPoint/mauimicromvvm</PackageProjectUrl>
     <NeutralLanguage>en</NeutralLanguage>
+    <Nullable>enable</Nullable>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -35,16 +37,5 @@
           Pack="True"
           PackagePath="" />
     <SourceRoot Include="$(MSBuildThisFileDirectory)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 </Project>

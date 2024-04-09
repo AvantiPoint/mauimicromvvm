@@ -23,6 +23,7 @@ public static class MauiProgram
             });
 
         builder.Services.MapView<MainPage, MainPageViewModel>()
+            .MapView<DialogDemo, DialogDemoViewModel>()
             .MapView<MessageDemoPage, MessageDemoPageViewModel>()
             .MapView<MessageDisplay, MessageDisplayViewModel>()
             .MapView<MauiInfluencersPage, MauiInfluencersViewModel>()

@@ -41,5 +41,8 @@ public class MainViewModel : MauiMicroViewModel
             Message = $"Pressed {_count} times!";
 
         _screenReader.Announce(Message);
+
+        if (_count > 3)
+            PageDialogs.DisplayAlert("Stop it!", "You're pressing too much!", "OK");
     }
 }

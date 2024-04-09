@@ -18,3 +18,32 @@ jobs:
       name: MauiMicroMvvm
       solution-path: build.slnf
       install-workload: maui
+
+  validate:
+    needs: [build]
+    runs-on: macos-14
+    steps:
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.2'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: NuGet
+          path: Artifacts
+      - name: Install Templates
+        run: dotnet new install Artifacts/AvantiPoint.MauiMicroMvvm.Templates.*.nupkg
+      - name: Add Local Source
+        run: dotnet nuget add source ${{ github.workspace }}/Artifacts --name Artifacts
+      - name: Create Test Project
+        run: dotnet new maui-micro -o TestProject
+      - name: Workload Install
+        run: dotnet workload install maui
+        working-directory: TestProject
+      - name: Build Project
+        run: dotnet build
+        working-directory: TestProject
