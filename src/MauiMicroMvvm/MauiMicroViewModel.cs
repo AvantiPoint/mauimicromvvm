@@ -6,10 +6,11 @@ using PropertyChangingEventHandler = System.ComponentModel.PropertyChangingEvent
 
 namespace MauiMicroMvvm;
 
-public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable
+public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDisposable
 {
     private readonly Dictionary<string, object> _properties = [];
     private readonly Lazy<ILogger> _lazyLogger;
+    private readonly object _locker = new ();
 
     protected MauiMicroViewModel(ViewModelContext context)
     {
@@ -18,6 +19,8 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         _lazyLogger = new Lazy<ILogger>(() => context.Logger.CreateLogger(GetType().Name));
         QueryParameters = new Dictionary<string, object>();
     }
+
+    protected bool IsDisposed { get; private set; }
 
     protected ILogger Logger => _lazyLogger.Value;
 
@@ -128,5 +131,25 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         }
 
         OnParametersSet();
+    }
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting
+    /// unmanaged resources.
+    /// </summary>
+    protected virtual void Dispose() { }
+
+    void IDisposable.Dispose()
+    {
+        lock(_locker)
+        {
+            if (!IsDisposed)
+            {
+                Dispose();
+            }
+            IsDisposed = true;
+        }
+
+        GC.SuppressFinalize(this);
     }
 }

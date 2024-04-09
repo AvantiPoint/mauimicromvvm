@@ -1,9 +1,4 @@
 ﻿using Microsoft.Maui.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MauiMicroMvvm.Common;
 
@@ -37,11 +32,11 @@ public static class MvvmHelpers
 
     public static void Destroy(object? page)
     {
-        InvokeViewViewModelAction<IDestructible>(page, x => x.Destroy());
+        InvokeViewViewModelAction<IDisposable>(page, x => x.Dispose());
     }
 
     public static Task DestroyAsync(object? page)
     {
-        return InvokeViewViewModelActionAsync<IDestructibleAsync>(page, x => x.DestroyAsync());
+        return InvokeViewViewModelActionAsync<IAsyncDisposable>(page, x => x.DisposeAsync().AsTask());
     }
 }
