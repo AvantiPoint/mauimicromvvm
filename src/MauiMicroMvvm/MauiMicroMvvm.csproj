@@ -2,12 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>$(DotNetVersion)</TargetFramework>
-    <UseMaui>true</UseMaui>
-    <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Description>MauiMicroMvvm is a micro Mvvm Framework built specifically for use with .NET MAUI Shell applications. It's built in a way that gives you the flexibility to do what you need with a proper decoupling between the View &amp; ViewModel that many frameworks seems to mess up.</Description>
     <PackageTags>dotnet-maui;mvvm;mauimicro;</PackageTags>
-    <PackageId>AvantiPoint.$(AssemblyName)</PackageId>
     <Title>MauiMicroMvvm</Title>
   </PropertyGroup>
 

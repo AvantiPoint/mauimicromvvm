@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <PackageId>AvantiPoint.$(AssemblyName)</PackageId>
+  </PropertyGroup>
+</Project>

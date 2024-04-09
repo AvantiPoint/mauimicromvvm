@@ -7,9 +7,9 @@
     <IncludeSymbols>false</IncludeSymbols>
     <IncludeSource>false</IncludeSource>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <Description>Project Template for Maui Micro by AvantiPoint</Description>
     <PackageTags>dotnet-maui;mauimicro;mauimicromvvm;mauimicrotemplates;templates;mvvm;maui;</PackageTags>
-    <PackageId>AvantiPoint.$(AssemblyName)</PackageId>
     <Title>MauiMicroMvvm Templates</Title>
     <NoWarn>$(NoWarn);NU5128</NoWarn>
   </PropertyGroup>
