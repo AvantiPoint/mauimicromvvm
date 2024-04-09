@@ -31,7 +31,7 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: NuGet
           path: Artifacts
