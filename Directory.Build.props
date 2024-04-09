@@ -15,7 +15,10 @@
     <PackageProjectUrl>https://github.com/AvantiPoint/mauimicromvvm</PackageProjectUrl>
     <NeutralLanguage>en</NeutralLanguage>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+    <IsPackable>$(MSBuildProjectName.Contains('MauiMicroMvvm'))</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -13,9 +13,8 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .UseMauiMicroMvvm<AppShell>(
-                "Resources/Styles/Colors.xaml",
-                "Resources/Styles/Styles.xaml")
+            .UseMauiApp<App>()
+            .UseMauiMicroMvvm<AppShell>()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

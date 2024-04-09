@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using MauiMicroMvvm.Common;
 using MauiMicroMvvm.Xaml;
 
 namespace MauiMicroMvvm.Internals;
@@ -8,13 +9,15 @@ public class AppLifecycleBehavior : Behavior
 {
     private bool _didAppear;
     private bool _isVisible;
-    private Window _window;
-    public Page Page { get; set; }
+    private Window? _window;
+    public Page? Page { get; set; }
 
-    public BindableObject View { get; set; }
+    public BindableObject? View { get; set; }
 
     protected override void OnAttachedTo(BindableObject bindable)
     {
+        ArgumentNullException.ThrowIfNull(Page);
+        ArgumentNullException.ThrowIfNull(View);
         base.OnAttachedTo(bindable);
         Page.Appearing += OnAppearing;
         Page.Disappearing += OnDisappearing;
@@ -34,13 +37,19 @@ public class AppLifecycleBehavior : Behavior
         }
     }
 
-    protected override void OnDetachingFrom(BindableObject bindable)
+    protected override async void OnDetachingFrom(BindableObject bindable)
     {
+        ArgumentNullException.ThrowIfNull(Page);
+        ArgumentNullException.ThrowIfNull(View);
+
         base.OnDetachingFrom(bindable);
         Page.Appearing -= OnAppearing;
         Page.Disappearing -= OnDisappearing;
         Page.PropertyChanged -= OnPagePropertyChanged;
         View.PropertyChanged -= OnViewPropertyChanged;
+
+        MvvmHelpers.Destroy(View);
+        await MvvmHelpers.DestroyAsync(View);
         if (_window is not null)
         {
             _window.Resumed -= OnResumed;
@@ -50,8 +59,11 @@ public class AppLifecycleBehavior : Behavior
         Page = null;
     }
 
-    private void OnViewPropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void OnViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        ArgumentNullException.ThrowIfNull(Page);
+        ArgumentNullException.ThrowIfNull(View);
+
         if (e.PropertyName != MauiMicro.SharedContextProperty.PropertyName)
             return;
 
@@ -60,8 +72,11 @@ public class AppLifecycleBehavior : Behavior
             MauiMicro.SetSharedContext(Page, value);
     }
 
-    private void OnPagePropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void OnPagePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        ArgumentNullException.ThrowIfNull(Page);
+        ArgumentNullException.ThrowIfNull(View);
+
         if (e.PropertyName != MauiMicro.SharedContextProperty.PropertyName)
             return;
 
@@ -70,32 +85,39 @@ public class AppLifecycleBehavior : Behavior
             MauiMicro.SetSharedContext(View, value);
     }
 
-    private void OnResumed(object sender, EventArgs e)
+    private void OnResumed(object? sender, EventArgs e)
     {
-        if (_isVisible && View.BindingContext is IAppLifecycle lifecycle)
-            lifecycle.OnResume();
+        MvvmHelpers.InvokeViewViewModelAction<IAppLifecycle>(View, x => x.OnResume());
     }
 
-    private void OnStopped(object sender, EventArgs e)
+    private void OnStopped(object? sender, EventArgs e)
     {
-        if (_isVisible && View.BindingContext is IAppLifecycle lifecycle)
-            lifecycle.OnSleep();
+        MvvmHelpers.InvokeViewViewModelAction<IAppLifecycle>(View, x => x.OnSleep());
     }
 
-    private void OnAppearing(object sender, EventArgs e)
+    private void OnAppearing(object? sender, EventArgs e)
     {
-        if (!_didAppear && View.BindingContext is IViewModelActivation initialize)
-            initialize.OnFirstLoad();
+        if (!_didAppear)
+        {
+            MvvmHelpers.InvokeViewViewModelAction<IViewModelActivation>(View, x => x.OnFirstLoad());
+        }
+
         _didAppear = true;
-        if (View.BindingContext is IViewLifecycle lifecycle)
-            lifecycle.OnAppearing();
+
+        if (!_isVisible)
+        {
+            MvvmHelpers.InvokeViewViewModelAction<IViewLifecycle>(View, x => x.OnAppearing());
+        }
+
         _isVisible = true;
     }
 
-    private void OnDisappearing(object sender, EventArgs e)
+    private void OnDisappearing(object? sender, EventArgs e)
     {
-        if (View.BindingContext is IViewLifecycle lifecycle)
-            lifecycle.OnDisappearing();
+        if (_isVisible)
+        {
+            MvvmHelpers.InvokeViewViewModelAction<IViewLifecycle>(View, x => x.OnDisappearing());
+        }
 
         _isVisible = false;
     }

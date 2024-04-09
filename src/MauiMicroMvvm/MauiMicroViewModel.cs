@@ -6,10 +6,11 @@ using PropertyChangingEventHandler = System.ComponentModel.PropertyChangingEvent
 
 namespace MauiMicroMvvm;
 
-public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable
+public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDisposable
 {
     private readonly Dictionary<string, object> _properties = [];
     private readonly Lazy<ILogger> _lazyLogger;
+    private readonly object _locker = new ();
 
     protected MauiMicroViewModel(ViewModelContext context)
     {
@@ -19,14 +20,16 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         QueryParameters = new Dictionary<string, object>();
     }
 
+    protected bool IsDisposed { get; private set; }
+
     protected ILogger Logger => _lazyLogger.Value;
 
     protected INavigation Navigation { get; }
 
     protected IPageDialogs PageDialogs { get; }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-    public event PropertyChangingEventHandler PropertyChanging;
+    public event PropertyChangedEventHandler? PropertyChanged;
+    public event PropertyChangingEventHandler? PropertyChanging;
 
     public bool IsBusy
     {
@@ -50,26 +53,55 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
 
     protected virtual void OnParametersSet() { }
 
-    protected T Get<T>(T defaultValue = default, [CallerMemberName]string propertyName = null)
+    protected T Get<T>(T? defaultValue = default, [CallerMemberName]string? propertyName = null)
     {
-        if (_properties.ContainsKey(propertyName))
-            return (T)_properties[propertyName];
+        ArgumentException.ThrowIfNullOrEmpty(propertyName);
+        if (_properties.TryGetValue(propertyName, out var value) && value is T valueAsT)
+            return valueAsT;
 
-        return defaultValue;
+        if (defaultValue is null && typeof(T).IsValueType)
+            defaultValue = Activator.CreateInstance<T>();
+
+        if (Nullable.GetUnderlyingType(typeof(T)) != null)
+            ArgumentNullException.ThrowIfNull(defaultValue);
+
+        return defaultValue!;
     }
 
-    protected bool Set<T>(T value, [CallerMemberName]string propertyName = null)
+    protected bool Set<T>(T value, [CallerMemberName]string? propertyName = null)
     {
-        if(EqualityComparer<T>.Default.Equals(Get<T>(propertyName: propertyName), value))
+        ArgumentException.ThrowIfNullOrEmpty(propertyName);
+
+        var isSet = _properties.ContainsKey(propertyName);
+        if (isSet && EqualityComparer<T>.Default.Equals(Get<T>(propertyName: propertyName), value))
             return false;
 
-        PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-        _properties[propertyName] = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        RaisePropertyChanging(propertyName);
+
+        if (value is null && isSet)
+        {
+            _properties.Remove(propertyName);
+        }
+        else if (value is not null)
+        {
+            _properties[propertyName] = value;
+        }
+
+        RaisePropertyChanged(propertyName);
         return true;
     }
 
-    protected bool Set<T>(T value, Action callback, [CallerMemberName]string propertyName = null)
+    protected virtual void RaisePropertyChanging(string propertyName)
+    {
+        PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+    }
+
+    protected virtual void RaisePropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected bool Set<T>(T value, Action callback, [CallerMemberName]string? propertyName = null)
     {
         if (Set(value, propertyName))
         {
@@ -99,5 +131,25 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         }
 
         OnParametersSet();
+    }
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting
+    /// unmanaged resources.
+    /// </summary>
+    protected virtual void Dispose() { }
+
+    void IDisposable.Dispose()
+    {
+        lock(_locker)
+        {
+            if (!IsDisposed)
+            {
+                Dispose();
+            }
+            IsDisposed = true;
+        }
+
+        GC.SuppressFinalize(this);
     }
 }
