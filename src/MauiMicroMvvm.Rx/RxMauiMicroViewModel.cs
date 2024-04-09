@@ -12,7 +12,7 @@ public class RxMauiMicroViewModel : ReactiveObject, IViewModelActivation, IViewL
     private readonly Subject<ViewLifecycleState> _viewLifecycleState;
     private readonly Subject<IDictionary<string, object>> _queryParameters;
     private readonly Lazy<ILogger> _lazyLogger;
-    protected ObservableAsPropertyHelper<bool> IsBusyHelper;
+    protected ObservableAsPropertyHelper<bool>? IsBusyHelper;
     private readonly ObservableAsPropertyHelper<bool> _isNotBusyHelper;
     protected readonly CompositeDisposable Disposables;
 
@@ -21,7 +21,7 @@ public class RxMauiMicroViewModel : ReactiveObject, IViewModelActivation, IViewL
         _applifecycleState = new Subject<AppLifecycleState>();
         _viewLifecycleState = new Subject<ViewLifecycleState>();
         _queryParameters = new Subject<IDictionary<string, object>>();
-        Disposables = new CompositeDisposable();
+        Disposables = [];
         Navigation = context.Navigation;
         PageDialogs = context.PageDialogs;
         _lazyLogger = new Lazy<ILogger>(() => context.Logger.CreateLogger(GetType().Name));

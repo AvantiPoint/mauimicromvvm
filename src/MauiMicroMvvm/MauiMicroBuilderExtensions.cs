@@ -21,9 +21,9 @@ public static class MauiMicroBuilderExtensions
             .AddSingleton<TApp>()
             .AddSingleton<IApplication>(sp =>
             {
-                var app = sp.GetRequiredService<TApp>();                
+                var app = sp.GetRequiredService<TApp>();
 
-                if (mergedDictionaries.Any())
+                if (mergedDictionaries.Length != 0)
                 {
                     var assembly = typeof(TShell).Assembly;
                     var qualifiedResources = mergedDictionaries.Select(x =>
@@ -42,10 +42,10 @@ public static class MauiMicroBuilderExtensions
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>";
                     
-                    app.Resources.LoadFromXaml(xaml);                    
+                    app.Resources.LoadFromXaml(xaml);
                 }
 
-                if (resources != null && resources.Keys.Any())
+                if (resources != null && resources.Keys.Count != 0)
                 {
                     app.Resources.Add(resources);
                 }
@@ -71,7 +71,7 @@ public static class MauiMicroBuilderExtensions
         where TShell : Shell =>
         builder.UseMauiMicroMvvm<Application, TShell>(resources, mergedDictionaries);
 
-    public static IServiceCollection MapView<TView, TViewModel>(this IServiceCollection services, string key = null)
+    public static IServiceCollection MapView<TView, TViewModel>(this IServiceCollection services, string? key = null)
         where TView : VisualElement
         where TViewModel : class
     {
