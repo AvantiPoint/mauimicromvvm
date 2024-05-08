@@ -61,7 +61,7 @@ public class RxMauiMicroViewModel : ReactiveObject, IViewModelActivation, IViewL
         _viewLifecycleState.OnNext(ViewLifecycleState.Appearing);
 
     void IViewLifecycle.OnDisappearing() => 
-        _viewLifecycleState.OnNext(ViewLifecycleState.Appearing);
+        _viewLifecycleState.OnNext(ViewLifecycleState.Disappearing);
 
     void IAppLifecycle.OnResume() => 
         _applifecycleState.OnNext(AppLifecycleState.Resume);
