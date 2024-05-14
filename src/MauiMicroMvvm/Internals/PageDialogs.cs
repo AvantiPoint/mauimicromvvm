@@ -1,10 +1,10 @@
 ﻿namespace MauiMicroMvvm.Internals;
 
-internal class PageDialogs : IPageDialogs
+internal class PageDialogs<TShell> : IPageDialogs where TShell : Shell
 {
-    private readonly Shell _shell;
+    private readonly TShell _shell;
 
-    public PageDialogs(Shell shell)
+    public PageDialogs(TShell shell)
     {
         _shell = shell;
     }
