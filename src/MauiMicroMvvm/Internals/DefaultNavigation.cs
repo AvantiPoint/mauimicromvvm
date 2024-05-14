@@ -3,16 +3,16 @@
 namespace MauiMicroMvvm.Internals;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
-public class DefaultNavigation : INavigation
+public class DefaultNavigation<TShell> : INavigation where TShell : Shell
 {
-    private readonly Shell _shell;
+    private readonly TShell _shell;
 
-    public DefaultNavigation(Shell shell)
+    public DefaultNavigation(TShell shell)
     {
         _shell = shell;
     }
 
-    public async Task GoToAsync(string uri) => 
+    public async Task GoToAsync(string uri) =>
         await _shell.GoToAsync(uri);
 
     public async Task GoToAsync(string uri, IDictionary<string, object> parameters) =>

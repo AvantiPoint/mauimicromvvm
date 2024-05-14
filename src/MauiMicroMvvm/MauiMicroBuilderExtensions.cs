@@ -15,8 +15,8 @@ public static class MauiMicroBuilderExtensions
             .AddSingleton<IWindowCreator, WindowCreator<TShell>>()
             .AddSingleton<IViewFactory, ViewFactory>()
             .AddSingleton<IBehaviorFactory, BehaviorFactory>()
-            .AddSingleton<INavigation, DefaultNavigation>()
-            .AddSingleton<IPageDialogs, PageDialogs>()
+            .AddSingleton<INavigation, DefaultNavigation<TShell>>()
+            .AddSingleton<IPageDialogs, PageDialogs<TShell>>()
             .AddScoped<ViewModelContext>();
         return builder;
     }
@@ -58,7 +58,7 @@ public static class MauiMicroBuilderExtensions
 {string.Join('\n', qualifiedResources)}
   </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>";
-                    
+
                     app.Resources.LoadFromXaml(xaml);
                 }
 
