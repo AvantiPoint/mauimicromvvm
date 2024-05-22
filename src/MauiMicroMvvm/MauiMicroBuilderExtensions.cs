@@ -94,7 +94,7 @@ public static class MauiMicroBuilderExtensions
         if (typeof(TView).IsAssignableTo(typeof(Page)))
             Routing.RegisterRoute(key, typeof(TView));
 
-        return (typeof(TView).IsAssignableTo(typeof(Shell)) ? services.AddTransient(CreateView<TView>) : services.AddTransient(CreateView<TView>))
+        return (typeof(TView).IsAssignableTo(typeof(Shell)) ? services.AddSingleton(CreateView<TView>) : services.AddTransient(CreateView<TView>))
             .AddSingleton(new ViewMapping(key, typeof(TView), typeof(TViewModel)))
             .AddTransient<TViewModel>();
     }
