@@ -94,15 +94,19 @@ public static class MauiMicroBuilderExtensions
         if (typeof(TView).IsAssignableTo(typeof(Page)))
             Routing.RegisterRoute(key, typeof(TView));
 
-        return services.AddTransient<TView>(sp =>
-        {
-            var viewFactory = sp.GetRequiredService<IViewFactory>();
-            var view = viewFactory.CreateView<TView>();
-            viewFactory.Configure(view);
-            return view;
-        })
-            .AddSingleton(new ViewMapping(key, typeof(TView), typeof(TViewModel)))
-            .AddTransient<TViewModel>();
+        return typeof(TView).IsAssignableTo(typeof(Shell))
+            ? services.AddSingleton(CreateView<TView>)
+            : services.AddTransient(CreateView<TView>)
+        .AddSingleton(new ViewMapping(key, typeof(TView), typeof(TViewModel)))
+        .AddTransient<TViewModel>();
+    }
+
+    private static TView CreateView<TView>(IServiceProvider sp) where TView : VisualElement
+    {
+        var viewFactory = sp.GetRequiredService<IViewFactory>();
+        var view = viewFactory.CreateView<TView>();
+        viewFactory.Configure(view);
+        return view;
     }
 
     public static IServiceCollection ApplyBehavior<TView, TBehavior>(this IServiceCollection services)
