@@ -5,22 +5,23 @@ namespace MauiMicroMvvm.Internals;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class DefaultNavigation<TShell> : INavigation where TShell : Shell
 {
-    private readonly TShell _shell;
+    private readonly Lazy<TShell> _lazyShell;
+    private TShell Shell => _lazyShell.Value;
 
-    public DefaultNavigation(TShell shell)
+    public DefaultNavigation(IServiceProvider services)
     {
-        _shell = shell;
+        _lazyShell = new Lazy<TShell>(services.GetRequiredService<TShell>);
     }
 
     public async Task GoToAsync(string uri) =>
-        await _shell.GoToAsync(uri);
+        await Shell.GoToAsync(uri);
 
     public async Task GoToAsync(string uri, IDictionary<string, object> parameters) =>
-        await _shell.GoToAsync(uri, parameters);
+        await Shell.GoToAsync(uri, parameters);
 
     public async Task GoToAsync(string uri, bool animate) =>
-        await _shell.GoToAsync(uri, animate);
+        await Shell.GoToAsync(uri, animate);
 
     public async Task GoToAsync(string uri, bool animate, IDictionary<string, object> parameters) =>
-        await _shell.GoToAsync(uri, animate, parameters);
+        await Shell.GoToAsync(uri, animate, parameters);
 }

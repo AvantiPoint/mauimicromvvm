@@ -2,28 +2,29 @@
 
 internal class PageDialogs<TShell> : IPageDialogs where TShell : Shell
 {
-    private readonly TShell _shell;
+    private readonly Lazy<TShell> _lazyShell;
+    private TShell Shell => _lazyShell.Value;
 
-    public PageDialogs(TShell shell)
+    public PageDialogs(IServiceProvider services)
     {
-        _shell = shell;
+        _lazyShell = new Lazy<TShell>(services.GetRequiredService<TShell>);
     }
 
     public Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>
-        _shell.DisplayActionSheet(title, cancel, destruction, buttons);
+        Shell.DisplayActionSheet(title, cancel, destruction, buttons);
 
     public Task<string> DisplayActionSheet(string title, string cancel, string destruction, FlowDirection flowDirection, params string[] buttons) =>
-        _shell.DisplayActionSheet(title, cancel, destruction, flowDirection, buttons);
+        Shell.DisplayActionSheet(title, cancel, destruction, flowDirection, buttons);
 
     public Task DisplayAlert(string title, string message, string cancel) =>
-        _shell.DisplayAlert(title, message, cancel);
+        Shell.DisplayAlert(title, message, cancel);
 
     public Task DisplayAlert(string title, string message, string cancel, FlowDirection flowDirection) =>
-        _shell.DisplayAlert(title, message, cancel, flowDirection);
+        Shell.DisplayAlert(title, message, cancel, flowDirection);
 
     public Task<bool> DisplayAlert(string title, string message, string accept, string cancel) =>
-        _shell.DisplayAlert(title, message, accept, cancel);
+        Shell.DisplayAlert(title, message, accept, cancel);
 
     public Task<bool> DisplayAlert(string title, string message, string accept, string cancel, FlowDirection flowDirection) =>
-        _shell.DisplayAlert(title, message, accept, cancel, flowDirection);
+        Shell.DisplayAlert(title, message, accept, cancel, flowDirection);
 }
