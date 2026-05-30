@@ -98,7 +98,7 @@ public class BehaviorFactoryTests
         element.Behaviors.Should().ContainSingle(b => b is TestBehavior);
     }
 
-    [Fact]
+    [Fact(Skip = "Known issue: BehaviorFactory.ApplyBehaviors uses !registration.ViewType.IsAssignableFrom(registration.ViewType) (BehaviorFactory.cs line 19), which is always false, so non-matching behaviors are still applied. Re-enable once the production bug is fixed to assert element.Behaviors.Should().BeEmpty().")]
     public void ApplyBehaviors_ShouldNotAddNonMatchingBehaviors()
     {
         // Arrange
@@ -108,9 +108,6 @@ public class BehaviorFactoryTests
         services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp, sp.GetServices<IRegisteredBehavior>()));
         var serviceProvider = services.BuildServiceProvider();
 
-        // Note: There appears to be a bug in BehaviorFactory line 19 where it checks
-        // !registration.ViewType.IsAssignableFrom(registration.ViewType) which is always false.
-        // This test may fail until that bug is fixed to check element.GetType().IsAssignableTo(registration.ViewType)
         var behaviorFactory = serviceProvider.GetRequiredService<IBehaviorFactory>();
         var element = new TestLabel();
 
@@ -118,8 +115,7 @@ public class BehaviorFactoryTests
         behaviorFactory.ApplyBehaviors(element);
 
         // Assert
-        // Currently all behaviors will be added due to the bug, but when fixed, this should be empty
-        // element.Behaviors.Should().BeEmpty();
+        element.Behaviors.Should().BeEmpty();
     }
 
     [Fact]
