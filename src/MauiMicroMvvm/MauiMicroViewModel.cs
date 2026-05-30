@@ -37,7 +37,7 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         set => Set(value, () => Set(!value, nameof(IsNotBusy)));
     }
 
-    public bool IsNotBusy => Get<bool>();
+    public bool IsNotBusy => !IsBusy;
 
     protected IDictionary<string, object> QueryParameters { get; private set; }
 
@@ -115,18 +115,19 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         QueryParameters = query ?? new Dictionary<string, object>();
-        if (query is null || !query.Any())
-            return;
 
-        var properties = GetType().GetProperties();
-        foreach((var key, var value) in query)
+        if (query is not null && query.Any())
         {
-            var propInfo = properties.FirstOrDefault(p => p.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase));
-            if (propInfo is not null)
+            var properties = GetType().GetProperties();
+            foreach((var key, var value) in query)
             {
-                PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propInfo.Name));
-                _properties[propInfo.Name] = Convert.ChangeType(value, propInfo.PropertyType);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propInfo.Name));
+                var propInfo = properties.FirstOrDefault(p => p.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase));
+                if (propInfo is not null)
+                {
+                    PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propInfo.Name));
+                    _properties[propInfo.Name] = Convert.ChangeType(value, propInfo.PropertyType);
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propInfo.Name));
+                }
             }
         }
 

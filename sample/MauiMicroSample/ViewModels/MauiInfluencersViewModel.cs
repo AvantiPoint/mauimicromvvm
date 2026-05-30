@@ -41,7 +41,7 @@ public class MauiInfluencersViewModel : MauiMicroViewModel
                 return;
             }
 
-            Influencers = apiResponse.Content;
+            Influencers = apiResponse.Content ?? [];
         }
         finally
         {

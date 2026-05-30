@@ -29,7 +29,7 @@ public class AppLifecycleBehavior : Behavior
         }
 
         var shell = Shell.Current;
-        if (shell.Parent is Window window)
+        if (shell?.Parent is Window window)
         {
             _window = window;
             _window.Resumed += OnResumed;
