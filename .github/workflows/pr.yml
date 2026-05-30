@@ -6,7 +6,11 @@ on:
     paths:
       - "sample/**"
       - "src/**"
-      - "test/**"
+      - "tests/**"
+      - "Directory.Build.props"
+      - "Directory.Build.targets"
+      - "Directory.Packages.props"
+      - "MauiMicroMvvm.sln"
       - "version.json"
       - "build.slnf"
       - ".github/workflows/pr.yml"
@@ -17,21 +21,22 @@ jobs:
     with:
       name: MauiMicroMvvm
       solution-path: build.slnf
+      dotnet-version: 8.0.x
       install-workload: maui
 
   validate:
     needs: [build]
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.2'
-      - uses: actions/setup-dotnet@v4
+          xcode-version: latest-stable
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.x
       - name: Download Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v8
         with:
           name: NuGet
           path: Artifacts
