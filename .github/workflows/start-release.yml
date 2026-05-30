@@ -9,6 +9,7 @@ jobs:
     with:
       name: MauiMicroMvvm
       solution-path: build.slnf
+      dotnet-version: 8.0.x
       install-workload: maui
       code-sign: true
     secrets:
