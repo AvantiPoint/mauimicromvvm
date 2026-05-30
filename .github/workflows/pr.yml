@@ -26,15 +26,19 @@ jobs:
 
   validate:
     needs: [build]
-    runs-on: macos-15
+    runs-on: macos-14
     steps:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: '15.2'
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.x
+      - name: Pin .NET SDK for template validation
+        run: |
+          SDK_VERSION=$(dotnet --list-sdks | awk '/^8\./ { version=$1 } END { print version }')
+          dotnet new globaljson --sdk-version "$SDK_VERSION" --roll-forward latestFeature
       - name: Download Artifacts
         uses: actions/download-artifact@v8
         with:
@@ -50,5 +54,5 @@ jobs:
         run: dotnet workload install maui
         working-directory: TestProject
       - name: Build Project
-        run: dotnet build
+        run: dotnet build -f net8.0-maccatalyst -p:MauiVersion=8.0.3
         working-directory: TestProject
