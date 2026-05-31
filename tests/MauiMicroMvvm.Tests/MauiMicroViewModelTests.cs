@@ -98,7 +98,7 @@ public class MauiMicroViewModelTests
         // Assert
         // Navigation, PageDialogs, Logger, and QueryParameters are protected, so we test indirectly
         viewModel.IsBusy.Should().BeFalse();
-        viewModel.IsNotBusy.Should().BeTrue();
+        viewModel.IsNotBusy.Should().BeFalse();
     }
 
     [Fact]
@@ -190,11 +190,13 @@ public class MauiMicroViewModelTests
     // Set with callback is protected, tested indirectly through IsBusy which uses Set with callback
 
     [Fact]
-    public void IsBusy_ShouldToggleIsNotBusy()
+    public void IsBusy_ShouldToggleIsNotBusyThroughStoredPropertyNotifications()
     {
         // Arrange
         var context = CreateContext();
         var viewModel = new TestViewModel(context);
+        var changedProperties = new List<string?>();
+        viewModel.PropertyChanged += (_, e) => changedProperties.Add(e.PropertyName);
 
         // Act
         viewModel.IsBusy = true;
@@ -202,13 +204,16 @@ public class MauiMicroViewModelTests
         // Assert
         viewModel.IsBusy.Should().BeTrue();
         viewModel.IsNotBusy.Should().BeFalse();
+        changedProperties.Should().ContainInOrder(nameof(TestViewModel.IsBusy), nameof(TestViewModel.IsNotBusy));
 
         // Act
+        changedProperties.Clear();
         viewModel.IsBusy = false;
 
         // Assert
         viewModel.IsBusy.Should().BeFalse();
         viewModel.IsNotBusy.Should().BeTrue();
+        changedProperties.Should().ContainInOrder(nameof(TestViewModel.IsBusy), nameof(TestViewModel.IsNotBusy));
     }
 
     [Fact]

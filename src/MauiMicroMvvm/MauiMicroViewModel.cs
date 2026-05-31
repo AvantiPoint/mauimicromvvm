@@ -37,7 +37,7 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         set => Set(value, () => Set(!value, nameof(IsNotBusy)));
     }
 
-    public bool IsNotBusy => !IsBusy;
+    public bool IsNotBusy => Get<bool>();
 
     protected IDictionary<string, object> QueryParameters { get; private set; }
 

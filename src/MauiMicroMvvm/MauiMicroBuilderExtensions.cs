@@ -110,7 +110,7 @@ public static class MauiMicroBuilderExtensions
         where TBehavior : Behavior
     {
         return services.AddTransient<TBehavior>()
-            .AddSingleton<RegisteredBehavior<TView, TBehavior>>();
+            .AddSingleton<IRegisteredBehavior, RegisteredBehavior<TView, TBehavior>>();
     }
 
     public static IServiceCollection ApplyBehavior<TView>(this IServiceCollection services, Action<IServiceProvider, TView> onAttached, Action<IServiceProvider, TView>? onDetached = null)
