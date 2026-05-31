@@ -54,5 +54,5 @@ jobs:
         run: dotnet workload install maui
         working-directory: TestProject
       - name: Build Project
-        run: dotnet build -f net10.0-maccatalyst -p:MauiVersion=10.0.70
+        run: dotnet build -f net10.0-android -p:MauiVersion=10.0.70
         working-directory: TestProject
