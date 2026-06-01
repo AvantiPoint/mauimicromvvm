@@ -18,6 +18,7 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         PageDialogs = context.PageDialogs;
         _lazyLogger = new Lazy<ILogger>(() => context.Logger.CreateLogger(GetType().Name));
         QueryParameters = new Dictionary<string, object>();
+        Set(true, nameof(IsNotBusy));
     }
 
     protected bool IsDisposed { get; private set; }

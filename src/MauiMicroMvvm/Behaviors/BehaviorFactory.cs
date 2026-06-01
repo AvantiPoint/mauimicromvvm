@@ -4,9 +4,8 @@ public sealed class BehaviorFactory : IBehaviorFactory
 {
     private readonly IEnumerable<IRegisteredBehavior> _behaviors;
 
-    public BehaviorFactory(IServiceProvider services, IEnumerable<IRegisteredBehavior> behaviors)
+    public BehaviorFactory(IEnumerable<IRegisteredBehavior> behaviors)
     {
-        ArgumentNullException.ThrowIfNull(services);
         _behaviors = behaviors ?? [];
     }
 

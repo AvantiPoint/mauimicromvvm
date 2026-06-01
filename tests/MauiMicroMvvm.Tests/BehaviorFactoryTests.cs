@@ -2,7 +2,6 @@ using FluentAssertions;
 using MauiMicroMvvm.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
-using Moq;
 using Xunit;
 
 namespace MauiMicroMvvm.Tests;
@@ -30,19 +29,9 @@ public class BehaviorFactoryTests
     private class TestPage : Page { }
 
     [Fact]
-    public void Constructor_ShouldThrow_WhenServicesIsNull()
-    {
-        var behaviors = Array.Empty<IRegisteredBehavior>();
-
-        Assert.Throws<ArgumentNullException>(() => new BehaviorFactory(null!, behaviors));
-    }
-
-    [Fact]
     public void Constructor_ShouldHandleNullBehaviors()
     {
-        var services = new Mock<IServiceProvider>();
-
-        var factory = new BehaviorFactory(services.Object, null!);
+        var factory = new BehaviorFactory(null!);
 
         factory.Should().NotBeNull();
     }
@@ -65,7 +54,7 @@ public class BehaviorFactoryTests
     {
         var services = new ServiceCollection();
         services.ApplyBehavior<TestLabel, TestBehavior>();
-        services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp, sp.GetServices<IRegisteredBehavior>()));
+        services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp.GetServices<IRegisteredBehavior>()));
         using var serviceProvider = services.BuildServiceProvider();
         var element = new TestLabel();
 
@@ -80,7 +69,7 @@ public class BehaviorFactoryTests
     {
         var services = new ServiceCollection();
         services.ApplyBehavior<VisualElement, TestBehavior>();
-        services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp, sp.GetServices<IRegisteredBehavior>()));
+        services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp.GetServices<IRegisteredBehavior>()));
         using var serviceProvider = services.BuildServiceProvider();
         var element = new TestLabel();
 
@@ -94,7 +83,7 @@ public class BehaviorFactoryTests
     {
         var services = new ServiceCollection();
         services.ApplyBehavior<TestPage, TestBehavior>();
-        services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp, sp.GetServices<IRegisteredBehavior>()));
+        services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp.GetServices<IRegisteredBehavior>()));
         using var serviceProvider = services.BuildServiceProvider();
         var element = new TestLabel();
 
@@ -106,8 +95,7 @@ public class BehaviorFactoryTests
     [Fact]
     public void ApplyBehaviors_ShouldHandleEmptyBehaviorsList()
     {
-        var services = new Mock<IServiceProvider>();
-        var factory = new BehaviorFactory(services.Object, []);
+        var factory = new BehaviorFactory([]);
         var element = new TestLabel();
 
         factory.ApplyBehaviors(element);
