@@ -1,6 +1,7 @@
 using FluentAssertions;
 using MauiMicroMvvm.Behaviors;
 using MauiMicroMvvm.Internals;
+using MauiMicroMvvm.Tests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using Moq;
@@ -10,9 +11,6 @@ namespace MauiMicroMvvm.Tests;
 
 public class ViewFactoryTests
 {
-    private class TestPage : Page { }
-    private class TestLabel : Label { }
-    private class TestViewModel { }
 
     private static IServiceProvider CreateServiceProvider()
     {

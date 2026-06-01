@@ -6,8 +6,11 @@
     <Description>MauiMicroMvvm is a micro Mvvm Framework built specifically for use with .NET MAUI Shell applications. It's built in a way that gives you the flexibility to do what you need with a proper decoupling between the View &amp; ViewModel that many frameworks seems to mess up.</Description>
     <PackageTags>dotnet-maui;mvvm;mauimicro;</PackageTags>
     <Title>MauiMicroMvvm</Title>
-    <InternalsVisibleTo>MauiMicroMvvm.Tests</InternalsVisibleTo>
   </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="MauiMicroMvvm.Tests" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="build\Package.*" Pack="true" PackagePath="buildTransitive\$(PackageId)%(Extension)" />

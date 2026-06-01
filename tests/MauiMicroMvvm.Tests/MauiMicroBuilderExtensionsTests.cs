@@ -1,6 +1,7 @@
 using FluentAssertions;
 using MauiMicroMvvm.Behaviors;
 using MauiMicroMvvm.Internals;
+using MauiMicroMvvm.Tests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Hosting;
@@ -10,12 +11,6 @@ namespace MauiMicroMvvm.Tests;
 
 public class MauiMicroBuilderExtensionsTests
 {
-    private class TestShell : Shell { }
-    private class TestApp : Application { }
-    private class TestPage : Page { }
-    private class TestLabel : Label { }
-    private class TestViewModel { }
-    private class TestBehavior : Behavior<TestLabel> { }
 
     [Fact]
     public void UseMauiMicroMvvm_ShouldRegisterServices()

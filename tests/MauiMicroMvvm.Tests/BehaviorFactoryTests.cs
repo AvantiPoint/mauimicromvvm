@@ -1,5 +1,6 @@
 using FluentAssertions;
 using MauiMicroMvvm.Behaviors;
+using MauiMicroMvvm.Tests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using Xunit;
@@ -8,25 +9,6 @@ namespace MauiMicroMvvm.Tests;
 
 public class BehaviorFactoryTests
 {
-    private class TestBehavior : Behavior<Label>
-    {
-        public bool Attached { get; private set; }
-
-        protected override void OnAttachedTo(Label bindable)
-        {
-            base.OnAttachedTo(bindable);
-            Attached = true;
-        }
-
-        protected override void OnDetachingFrom(Label bindable)
-        {
-            base.OnDetachingFrom(bindable);
-            Attached = false;
-        }
-    }
-
-    private class TestLabel : Label { }
-    private class TestPage : Page { }
 
     [Fact]
     public void Constructor_ShouldHandleNullBehaviors()
@@ -40,7 +22,7 @@ public class BehaviorFactoryTests
     public void ApplyBehavior_ShouldRegisterBehaviorForFactoryDiscovery()
     {
         var services = new ServiceCollection();
-        services.ApplyBehavior<TestLabel, TestBehavior>();
+        services.ApplyBehavior<TestLabel, TrackingLabelBehavior>();
         using var serviceProvider = services.BuildServiceProvider();
 
         var registrations = serviceProvider.GetServices<IRegisteredBehavior>().ToArray();
@@ -53,14 +35,14 @@ public class BehaviorFactoryTests
     public void ApplyBehaviors_ShouldAttachMatchingBehaviorToVisualElement()
     {
         var services = new ServiceCollection();
-        services.ApplyBehavior<TestLabel, TestBehavior>();
+        services.ApplyBehavior<TestLabel, TrackingLabelBehavior>();
         services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp.GetServices<IRegisteredBehavior>()));
         using var serviceProvider = services.BuildServiceProvider();
         var element = new TestLabel();
 
         serviceProvider.GetRequiredService<IBehaviorFactory>().ApplyBehaviors(element);
 
-        var behavior = element.Behaviors.Should().ContainSingle().Subject.Should().BeOfType<TestBehavior>().Subject;
+        var behavior = element.Behaviors.Should().ContainSingle().Subject.Should().BeOfType<TrackingLabelBehavior>().Subject;
         behavior.Attached.Should().BeTrue();
     }
 
@@ -68,21 +50,21 @@ public class BehaviorFactoryTests
     public void ApplyBehaviors_ShouldAttachBehaviorRegisteredForBaseVisualElement()
     {
         var services = new ServiceCollection();
-        services.ApplyBehavior<VisualElement, TestBehavior>();
+        services.ApplyBehavior<VisualElement, TrackingLabelBehavior>();
         services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp.GetServices<IRegisteredBehavior>()));
         using var serviceProvider = services.BuildServiceProvider();
         var element = new TestLabel();
 
         serviceProvider.GetRequiredService<IBehaviorFactory>().ApplyBehaviors(element);
 
-        element.Behaviors.Should().ContainSingle().Which.Should().BeOfType<TestBehavior>();
+        element.Behaviors.Should().ContainSingle().Which.Should().BeOfType<TrackingLabelBehavior>();
     }
 
     [Fact]
     public void ApplyBehaviors_ShouldNotAttachBehaviorRegisteredForDifferentVisualElementType()
     {
         var services = new ServiceCollection();
-        services.ApplyBehavior<TestPage, TestBehavior>();
+        services.ApplyBehavior<TestPage, TrackingLabelBehavior>();
         services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp.GetServices<IRegisteredBehavior>()));
         using var serviceProvider = services.BuildServiceProvider();
         var element = new TestLabel();

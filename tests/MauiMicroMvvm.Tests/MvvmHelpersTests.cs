@@ -1,6 +1,7 @@
 using FluentAssertions;
 using MauiMicroMvvm;
 using MauiMicroMvvm.Common;
+using MauiMicroMvvm.Tests.Mocks;
 using Microsoft.Maui.Controls;
 using Xunit;
 
@@ -8,59 +9,6 @@ namespace MauiMicroMvvm.Tests;
 
 public class MvvmHelpersTests
 {
-    private class TestPage : Page { }
-    private class TestDisposable : IDisposable
-    {
-        public bool Disposed { get; private set; }
-
-        public void Dispose()
-        {
-            Disposed = true;
-        }
-    }
-
-    private class TestAsyncDisposable : IAsyncDisposable
-    {
-        public bool Disposed { get; private set; }
-
-        public ValueTask DisposeAsync()
-        {
-            Disposed = true;
-            return ValueTask.CompletedTask;
-        }
-    }
-
-    private class TestViewLifecycle : IViewLifecycle
-    {
-        public bool OnAppearingCalled { get; private set; }
-        public bool OnDisappearingCalled { get; private set; }
-
-        public void OnAppearing()
-        {
-            OnAppearingCalled = true;
-        }
-
-        public void OnDisappearing()
-        {
-            OnDisappearingCalled = true;
-        }
-    }
-
-    private class TestAppLifecycle : IAppLifecycle
-    {
-        public bool OnResumeCalled { get; private set; }
-        public bool OnSleepCalled { get; private set; }
-
-        public void OnResume()
-        {
-            OnResumeCalled = true;
-        }
-
-        public void OnSleep()
-        {
-            OnSleepCalled = true;
-        }
-    }
 
     [Fact]
     public void InvokeViewViewModelAction_ShouldInvoke_WhenValueIsType()

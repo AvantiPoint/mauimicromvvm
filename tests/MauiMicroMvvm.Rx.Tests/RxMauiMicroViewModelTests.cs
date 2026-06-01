@@ -1,5 +1,6 @@
 using FluentAssertions;
 using MauiMicroMvvm;
+using MauiMicroMvvm.Rx.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ReactiveUI;
@@ -11,18 +12,6 @@ namespace MauiMicroMvvm.Rx.Tests;
 
 public class RxMauiMicroViewModelTests
 {
-    private class TestRxViewModel : RxMauiMicroViewModel
-    {
-        public TestRxViewModel(ViewModelContext context) : base(context)
-        {
-        }
-
-        public new IObservable<ViewLifecycleState> ViewLifecycle => base.ViewLifecycle;
-        public new IObservable<AppLifecycleState> AppLifecycle => base.AppLifecycle;
-        public new IObservable<IDictionary<string, object>> OnParametersSet => base.OnParametersSet;
-        public new CompositeDisposable Disposables => base.Disposables;
-    }
-
     private static ViewModelContext CreateContext()
     {
         var loggerFactory = Mock.Of<ILoggerFactory>();

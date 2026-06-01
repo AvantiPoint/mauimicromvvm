@@ -1,5 +1,6 @@
 using FluentAssertions;
 using MauiMicroMvvm;
+using MauiMicroMvvm.Tests.Mocks;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.ComponentModel;
@@ -9,74 +10,6 @@ namespace MauiMicroMvvm.Tests;
 
 public class MauiMicroViewModelTests
 {
-    private class TestViewModel : MauiMicroViewModel
-    {
-        public TestViewModel(ViewModelContext context) : base(context)
-        {
-        }
-
-        public string TestProperty
-        {
-            get => Get<string>();
-            set => Set(value);
-        }
-
-        public int? NullableInt
-        {
-            get => Get<int?>();
-            set => Set(value);
-        }
-
-        public int ValueTypeProperty
-        {
-            get => Get<int>();
-            set => Set(value);
-        }
-
-        public bool OnParametersSetCalled { get; private set; }
-
-        protected override void OnParametersSet()
-        {
-            OnParametersSetCalled = true;
-            base.OnParametersSet();
-        }
-
-        public bool OnFirstLoadCalled { get; private set; }
-        public bool OnAppearingCalled { get; private set; }
-        public bool OnDisappearingCalled { get; private set; }
-        public bool OnResumeCalled { get; private set; }
-        public bool OnSleepCalled { get; private set; }
-
-        public override void OnFirstLoad()
-        {
-            OnFirstLoadCalled = true;
-            base.OnFirstLoad();
-        }
-
-        public override void OnAppearing()
-        {
-            OnAppearingCalled = true;
-            base.OnAppearing();
-        }
-
-        public override void OnDisappearing()
-        {
-            OnDisappearingCalled = true;
-            base.OnDisappearing();
-        }
-
-        public override void OnResume()
-        {
-            OnResumeCalled = true;
-            base.OnResume();
-        }
-
-        public override void OnSleep()
-        {
-            OnSleepCalled = true;
-            base.OnSleep();
-        }
-    }
 
     private static ViewModelContext CreateContext()
     {
@@ -93,7 +26,7 @@ public class MauiMicroViewModelTests
         var context = CreateContext();
 
         // Act
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Assert
         // Navigation, PageDialogs, Logger, and QueryParameters are protected, so we test indirectly
@@ -106,7 +39,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         System.ComponentModel.PropertyChangingEventArgs? eventArgs = null;
         viewModel.PropertyChanging += (_, e) => eventArgs = e;
 
@@ -115,7 +48,7 @@ public class MauiMicroViewModelTests
 
         // Assert
         eventArgs.Should().NotBeNull();
-        eventArgs!.PropertyName.Should().Be(nameof(TestViewModel.TestProperty));
+        eventArgs!.PropertyName.Should().Be(nameof(TestMauiMicroViewModel.TestProperty));
     }
 
     [Fact]
@@ -123,7 +56,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         System.ComponentModel.PropertyChangedEventArgs? eventArgs = null;
         viewModel.PropertyChanged += (_, e) => eventArgs = e;
 
@@ -132,7 +65,7 @@ public class MauiMicroViewModelTests
 
         // Assert
         eventArgs.Should().NotBeNull();
-        eventArgs!.PropertyName.Should().Be(nameof(TestViewModel.TestProperty));
+        eventArgs!.PropertyName.Should().Be(nameof(TestMauiMicroViewModel.TestProperty));
     }
 
     [Fact]
@@ -140,7 +73,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         var value = viewModel.TestProperty;
@@ -154,7 +87,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         viewModel.TestProperty = "TestValue";
@@ -169,7 +102,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         viewModel.TestProperty = "TestValue";
         var changingCount = 0;
         var changedCount = 0;
@@ -194,7 +127,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         var changedProperties = new List<string?>();
         viewModel.PropertyChanged += (_, e) => changedProperties.Add(e.PropertyName);
 
@@ -207,7 +140,7 @@ public class MauiMicroViewModelTests
         // Assert
         viewModel.IsBusy.Should().BeTrue();
         viewModel.IsNotBusy.Should().BeFalse();
-        changedProperties.Should().ContainInOrder(nameof(TestViewModel.IsBusy), nameof(TestViewModel.IsNotBusy));
+        changedProperties.Should().ContainInOrder(nameof(TestMauiMicroViewModel.IsBusy), nameof(TestMauiMicroViewModel.IsNotBusy));
 
         // Act
         changedProperties.Clear();
@@ -216,7 +149,7 @@ public class MauiMicroViewModelTests
         // Assert
         viewModel.IsBusy.Should().BeFalse();
         viewModel.IsNotBusy.Should().BeTrue();
-        changedProperties.Should().ContainInOrder(nameof(TestViewModel.IsBusy), nameof(TestViewModel.IsNotBusy));
+        changedProperties.Should().ContainInOrder(nameof(TestMauiMicroViewModel.IsBusy), nameof(TestMauiMicroViewModel.IsNotBusy));
     }
 
     [Fact]
@@ -224,7 +157,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         var value = viewModel.ValueTypeProperty;
@@ -240,7 +173,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         var query = new Dictionary<string, object> { { "TestProperty", "QueryValue" } };
 
         // Act
@@ -256,7 +189,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         viewModel.ApplyQueryAttributes(null!);
@@ -271,7 +204,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         var query = new Dictionary<string, object> { { "TestProperty", "QueryValue" } };
 
         // Act
@@ -286,7 +219,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         var query = new Dictionary<string, object> { { "testproperty", "QueryValue" } };
 
         // Act
@@ -301,7 +234,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         var query = new Dictionary<string, object> { { "ValueTypeProperty", "42" } };
 
         // Act
@@ -316,7 +249,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         viewModel.OnFirstLoad();
@@ -330,7 +263,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         viewModel.OnAppearing();
@@ -344,7 +277,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         viewModel.OnDisappearing();
@@ -358,7 +291,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         viewModel.OnResume();
@@ -372,7 +305,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         viewModel.OnSleep();
@@ -386,7 +319,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
 
         // Act
         ((IDisposable)viewModel).Dispose();
@@ -401,7 +334,7 @@ public class MauiMicroViewModelTests
     {
         // Arrange
         var context = CreateContext();
-        var viewModel = new TestViewModel(context);
+        var viewModel = new TestMauiMicroViewModel(context);
         viewModel.TestProperty = "InitialValue";
 
         // Act
