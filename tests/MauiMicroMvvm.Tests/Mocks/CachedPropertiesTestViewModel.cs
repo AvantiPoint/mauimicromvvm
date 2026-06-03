@@ -1,4 +1,4 @@
-using System.Reflection;
+using MauiMicroMvvm;
 
 namespace MauiMicroMvvm.Tests.Mocks;
 
@@ -8,8 +8,8 @@ internal class CachedPropertiesTestViewModel : TestMauiMicroViewModel
     {
     }
 
-    public IReadOnlyDictionary<string, PropertyInfo> GetQueryablePropertiesForTest()
+    public IQueryPropertyMap GetQueryPropertyMapForTest()
     {
-        return GetQueryableProperties();
+        return GetQueryPropertyMap();
     }
 }

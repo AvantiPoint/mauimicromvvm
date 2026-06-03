@@ -280,7 +280,7 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
-    public void ApplyQueryAttributes_ShouldUseCachedLookupWithoutEnumeratingProperties()
+    public void ApplyQueryAttributes_ShouldUseQueryPropertyMapAbstraction()
     {
         // Arrange
         var context = CreateContext();
@@ -298,11 +298,11 @@ public class MauiMicroViewModelTests
         // Assert
         viewModel.TestProperty.Should().Be("QueryValue");
         viewModel.ValueTypeProperty.Should().Be(42);
-        viewModel.TrackingProperties.TryGetValueCount.Should().Be(3);
+        viewModel.TrackingProperties.TryGetPropertyCount.Should().Be(3);
     }
 
     [Fact]
-    public void GetQueryableProperties_ShouldCacheMetadataPerViewModelType()
+    public void GetQueryPropertyMap_ShouldCacheDefaultMapPerViewModelType()
     {
         // Arrange
         var context = CreateContext();
@@ -310,12 +310,13 @@ public class MauiMicroViewModelTests
         var second = new CachedPropertiesTestViewModel(context);
 
         // Act
-        var firstProperties = first.GetQueryablePropertiesForTest();
-        var secondProperties = second.GetQueryablePropertiesForTest();
+        var firstProperties = first.GetQueryPropertyMapForTest();
+        var secondProperties = second.GetQueryPropertyMapForTest();
 
         // Assert
         secondProperties.Should().BeSameAs(firstProperties);
-        firstProperties.Keys.Should().Contain(nameof(TestMauiMicroViewModel.TestProperty));
+        firstProperties.TryGetProperty(nameof(TestMauiMicroViewModel.TestProperty), out var property).Should().BeTrue();
+        property.Name.Should().Be(nameof(TestMauiMicroViewModel.TestProperty));
     }
 
     [Fact]

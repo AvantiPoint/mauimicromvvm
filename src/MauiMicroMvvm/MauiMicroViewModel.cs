@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
-using System.Reflection;
 using System.Runtime.CompilerServices;
+using MauiMicroMvvm.Internals;
 using Microsoft.Extensions.Logging;
 using PropertyChangingEventArgs = System.ComponentModel.PropertyChangingEventArgs;
 using PropertyChangingEventHandler = System.ComponentModel.PropertyChangingEventHandler;
@@ -10,7 +10,7 @@ namespace MauiMicroMvvm;
 
 public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDisposable
 {
-    private static readonly ConcurrentDictionary<Type, Lazy<IReadOnlyDictionary<string, PropertyInfo>>> QueryablePropertiesByType = new();
+    private static readonly ConcurrentDictionary<Type, Lazy<IQueryPropertyMap>> QueryPropertyMapsByType = new();
 
     private readonly Dictionary<string, object> _properties = [];
     private readonly Lazy<ILogger> _lazyLogger;
@@ -124,38 +124,37 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         if (query is null || !query.Any())
             return;
 
-        var properties = GetQueryableProperties();
+        var queryPropertyMap = GetQueryPropertyMap();
         foreach((var key, var value) in query)
         {
-            if (properties.TryGetValue(key, out var propInfo))
+            if (queryPropertyMap.TryGetProperty(key, out var property))
             {
-                PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propInfo.Name));
-                _properties[propInfo.Name] = Convert.ChangeType(value, propInfo.PropertyType);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propInfo.Name));
+                ApplyQueryPropertyValue(property, value);
             }
         }
 
         OnParametersSet();
     }
 
-    protected virtual IReadOnlyDictionary<string, PropertyInfo> GetQueryableProperties()
+    protected virtual IQueryPropertyMap GetQueryPropertyMap()
     {
-        return QueryablePropertiesByType.GetOrAdd(
+        return QueryPropertyMapsByType.GetOrAdd(
             GetType(),
-            static type => new Lazy<IReadOnlyDictionary<string, PropertyInfo>>(
-                () => BuildQueryableProperties(type),
+            static type => new Lazy<IQueryPropertyMap>(
+                () => BuildQueryPropertyMap(type),
                 LazyThreadSafetyMode.ExecutionAndPublication)).Value;
     }
 
-    private static IReadOnlyDictionary<string, PropertyInfo> BuildQueryableProperties(Type type)
+    protected virtual void ApplyQueryPropertyValue(IQueryProperty property, object value)
     {
-        var properties = new Dictionary<string, PropertyInfo>(StringComparer.InvariantCultureIgnoreCase);
-        foreach (var property in type.GetProperties())
-        {
-            properties.TryAdd(property.Name, property);
-        }
+        RaisePropertyChanging(property.Name);
+        _properties[property.Name] = Convert.ChangeType(value, property.PropertyType);
+        RaisePropertyChanged(property.Name);
+    }
 
-        return properties;
+    private static IQueryPropertyMap BuildQueryPropertyMap(Type type)
+    {
+        return new ReflectionQueryPropertyMap(type);
     }
 
     /// <summary>

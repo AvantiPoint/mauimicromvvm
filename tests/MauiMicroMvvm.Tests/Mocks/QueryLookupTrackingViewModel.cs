@@ -1,26 +1,25 @@
-using System.Reflection;
 using MauiMicroMvvm;
 
 namespace MauiMicroMvvm.Tests.Mocks;
 
 internal class QueryLookupTrackingViewModel : TestMauiMicroViewModel
 {
-    private readonly IReadOnlyDictionary<string, PropertyInfo> _queryableProperties;
+    private readonly IQueryPropertyMap _queryPropertyMap;
 
     public QueryLookupTrackingViewModel(ViewModelContext context) : base(context)
     {
-        TrackingProperties = new TrackingQueryPropertyDictionary(new Dictionary<string, PropertyInfo>(StringComparer.InvariantCultureIgnoreCase)
+        TrackingProperties = new TrackingQueryPropertyMap(new Dictionary<string, IQueryProperty>(StringComparer.InvariantCultureIgnoreCase)
         {
-            [nameof(TestProperty)] = typeof(QueryLookupTrackingViewModel).GetProperty(nameof(TestProperty))!,
-            [nameof(ValueTypeProperty)] = typeof(QueryLookupTrackingViewModel).GetProperty(nameof(ValueTypeProperty))!,
+            [nameof(TestProperty)] = new TestQueryProperty(nameof(TestProperty), typeof(string)),
+            [nameof(ValueTypeProperty)] = new TestQueryProperty(nameof(ValueTypeProperty), typeof(int)),
         });
-        _queryableProperties = TrackingProperties;
+        _queryPropertyMap = TrackingProperties;
     }
 
-    public TrackingQueryPropertyDictionary TrackingProperties { get; }
+    public TrackingQueryPropertyMap TrackingProperties { get; }
 
-    protected override IReadOnlyDictionary<string, PropertyInfo> GetQueryableProperties()
+    protected override IQueryPropertyMap GetQueryPropertyMap()
     {
-        return _queryableProperties;
+        return _queryPropertyMap;
     }
 }
