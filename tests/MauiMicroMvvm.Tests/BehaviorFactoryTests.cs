@@ -47,6 +47,22 @@ public class BehaviorFactoryTests
     }
 
     [Fact]
+    public void ApplyBehaviors_ShouldNotAttachDuplicateBehaviorWhenConfiguredTwice()
+    {
+        var services = new ServiceCollection();
+        services.ApplyBehavior<TestLabel, TrackingLabelBehavior>();
+        services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp.GetServices<IRegisteredBehavior>()));
+        using var serviceProvider = services.BuildServiceProvider();
+        var element = new TestLabel();
+        var factory = serviceProvider.GetRequiredService<IBehaviorFactory>();
+
+        factory.ApplyBehaviors(element);
+        factory.ApplyBehaviors(element);
+
+        element.Behaviors.Should().ContainSingle().Which.Should().BeOfType<TrackingLabelBehavior>();
+    }
+
+    [Fact]
     public void ApplyBehaviors_ShouldAttachBehaviorRegisteredForBaseVisualElement()
     {
         var services = new ServiceCollection();

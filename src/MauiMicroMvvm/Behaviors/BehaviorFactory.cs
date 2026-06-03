@@ -17,8 +17,13 @@ public sealed class BehaviorFactory : IBehaviorFactory
                 continue;
 
             var behavior = registration.GetBehavior();
-            if (behavior is not null)
+            if (behavior is not null && !HasBehavior(element, behavior.GetType()))
                 element.Behaviors.Add(behavior);
         }
+    }
+
+    private static bool HasBehavior(VisualElement element, Type behaviorType)
+    {
+        return element.Behaviors.Any(behavior => behaviorType.IsInstanceOfType(behavior));
     }
 }
