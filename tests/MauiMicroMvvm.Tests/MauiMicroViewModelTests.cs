@@ -35,6 +35,22 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
+    public void Constructor_ShouldInitializeIsNotBusyWithoutRaisingVirtualNotifications()
+    {
+        // Arrange
+        var context = CreateContext();
+
+        // Act
+        var viewModel = new ConstructorNotificationTrackingViewModel(context);
+
+        // Assert
+        viewModel.IsBusy.Should().BeFalse();
+        viewModel.IsNotBusy.Should().BeTrue();
+        viewModel.PropertyChangingCallCount.Should().Be(0);
+        viewModel.PropertyChangedCallCount.Should().Be(0);
+    }
+
+    [Fact]
     public void Set_ShouldRaisePropertyChangingEvent()
     {
         // Arrange
