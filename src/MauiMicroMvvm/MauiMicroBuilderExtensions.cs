@@ -97,9 +97,7 @@ public static class MauiMicroBuilderExtensions
         return services.AddTransient<TView>(sp =>
         {
             var viewFactory = sp.GetRequiredService<IViewFactory>();
-            var view = viewFactory.CreateView<TView>();
-            viewFactory.Configure(view);
-            return view;
+            return viewFactory.CreateView<TView>();
         })
             .AddSingleton(new ViewMapping(key, typeof(TView), typeof(TViewModel)))
             .AddTransient<TViewModel>();

@@ -139,6 +139,24 @@ public class MauiMicroBuilderExtensionsTests
     }
 
     [Fact]
+    public void MapView_ShouldApplyRegisteredBehaviorsOnce()
+    {
+        // Arrange
+        var builder = MauiApp.CreateBuilder();
+        builder.UseMauiApp<TestApp>();
+        builder.UseMauiMicroMvvm<TestShell>();
+        builder.Services.MapView<TestLabel, TestViewModel>();
+        builder.Services.ApplyBehavior<TestLabel, TrackingLabelBehavior>();
+        var app = builder.Build();
+
+        // Act
+        var view = app.Services.GetRequiredService<TestLabel>();
+
+        // Assert
+        view.Behaviors.Should().ContainSingle().Which.Should().BeOfType<TrackingLabelBehavior>();
+    }
+
+    [Fact]
     public void ApplyBehavior_Generic_ShouldRegisterBehavior()
     {
         // Arrange
