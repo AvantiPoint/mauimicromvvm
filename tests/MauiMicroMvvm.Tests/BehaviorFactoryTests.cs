@@ -3,6 +3,7 @@ using MauiMicroMvvm.Behaviors;
 using MauiMicroMvvm.Tests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Hosting;
 using Xunit;
 
 namespace MauiMicroMvvm.Tests;
