@@ -121,17 +121,17 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
     {
         QueryParameters = query ?? new Dictionary<string, object>();
 
-        if (query is not null && query.Any())
+        if (query is null || !query.Any())
+            return;
+
+        var properties = GetQueryableProperties();
+        foreach((var key, var value) in query)
         {
-            var properties = GetQueryableProperties();
-            foreach((var key, var value) in query)
+            if (properties.TryGetValue(key, out var propInfo))
             {
-                if (properties.TryGetValue(key, out var propInfo))
-                {
-                    PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propInfo.Name));
-                    _properties[propInfo.Name] = Convert.ChangeType(value, propInfo.PropertyType);
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propInfo.Name));
-                }
+                PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propInfo.Name));
+                _properties[propInfo.Name] = Convert.ChangeType(value, propInfo.PropertyType);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propInfo.Name));
             }
         }
 

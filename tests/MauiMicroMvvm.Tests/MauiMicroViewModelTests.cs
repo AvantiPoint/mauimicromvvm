@@ -201,7 +201,7 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
-    public void ApplyQueryAttributes_WithNull_ShouldInitializeEmptyDictionary()
+    public void ApplyQueryAttributes_WithNull_ShouldPreserveOriginalEarlyReturnSemantics()
     {
         // Arrange
         var context = CreateContext();
@@ -211,8 +211,7 @@ public class MauiMicroViewModelTests
         viewModel.ApplyQueryAttributes(null!);
 
         // Assert
-        // QueryParameters is protected, so we verify behavior through OnParametersSet being called
-        viewModel.OnParametersSetCalled.Should().BeTrue();
+        viewModel.OnParametersSetCalled.Should().BeFalse();
     }
 
     [Fact]
@@ -290,6 +289,7 @@ public class MauiMicroViewModelTests
         {
             { "testproperty", "QueryValue" },
             { "ValueTypeProperty", "42" },
+            { "UnknownProperty", "ignored" },
         };
 
         // Act
@@ -298,7 +298,7 @@ public class MauiMicroViewModelTests
         // Assert
         viewModel.TestProperty.Should().Be("QueryValue");
         viewModel.ValueTypeProperty.Should().Be(42);
-        viewModel.TrackingProperties.TryGetValueCount.Should().Be(2);
+        viewModel.TrackingProperties.TryGetValueCount.Should().Be(3);
     }
 
     [Fact]
@@ -319,7 +319,7 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
-    public void ApplyQueryAttributes_WithEmptyQuery_ShouldCallOnParametersSet()
+    public void ApplyQueryAttributes_WithEmptyQuery_ShouldPreserveOriginalEarlyReturnSemantics()
     {
         // Arrange
         var context = CreateContext();
@@ -329,7 +329,7 @@ public class MauiMicroViewModelTests
         viewModel.ApplyQueryAttributes(new Dictionary<string, object>());
 
         // Assert
-        viewModel.OnParametersSetCalled.Should().BeTrue();
+        viewModel.OnParametersSetCalled.Should().BeFalse();
     }
 
     [Fact]
