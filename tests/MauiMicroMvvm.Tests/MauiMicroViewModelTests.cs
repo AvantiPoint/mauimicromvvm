@@ -245,6 +245,78 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
+    public void ApplyQueryAttributes_ShouldRaiseChangingBeforeChanged()
+    {
+        // Arrange
+        var context = CreateContext();
+        var viewModel = new TestMauiMicroViewModel(context);
+        var events = new List<string>();
+        viewModel.PropertyChanging += (_, e) => events.Add($"Changing:{e.PropertyName}");
+        viewModel.PropertyChanged += (_, e) => events.Add($"Changed:{e.PropertyName}");
+        var query = new Dictionary<string, object> { { "TestProperty", "QueryValue" } };
+
+        // Act
+        viewModel.ApplyQueryAttributes(query);
+
+        // Assert
+        events.Should().Equal(
+            $"Changing:{nameof(TestMauiMicroViewModel.TestProperty)}",
+            $"Changed:{nameof(TestMauiMicroViewModel.TestProperty)}");
+    }
+
+    [Fact]
+    public void ApplyQueryAttributes_ShouldUseCachedLookupWithoutEnumeratingProperties()
+    {
+        // Arrange
+        var context = CreateContext();
+        var viewModel = new QueryLookupTrackingViewModel(context);
+        var query = new Dictionary<string, object>
+        {
+            { "testproperty", "QueryValue" },
+            { "ValueTypeProperty", "42" },
+        };
+
+        // Act
+        viewModel.ApplyQueryAttributes(query);
+
+        // Assert
+        viewModel.TestProperty.Should().Be("QueryValue");
+        viewModel.ValueTypeProperty.Should().Be(42);
+        viewModel.TrackingProperties.TryGetValueCount.Should().Be(2);
+    }
+
+    [Fact]
+    public void GetQueryableProperties_ShouldCacheMetadataPerViewModelType()
+    {
+        // Arrange
+        var context = CreateContext();
+        var first = new CachedPropertiesTestViewModel(context);
+        var second = new CachedPropertiesTestViewModel(context);
+
+        // Act
+        var firstProperties = first.GetQueryablePropertiesForTest();
+        var secondProperties = second.GetQueryablePropertiesForTest();
+
+        // Assert
+        secondProperties.Should().BeSameAs(firstProperties);
+        firstProperties.Keys.Should().Contain(nameof(TestMauiMicroViewModel.TestProperty));
+    }
+
+    [Fact]
+    public void ApplyQueryAttributes_WithEmptyQuery_ShouldCallOnParametersSet()
+    {
+        // Arrange
+        var context = CreateContext();
+        var viewModel = new TestMauiMicroViewModel(context);
+
+        // Act
+        viewModel.ApplyQueryAttributes(new Dictionary<string, object>());
+
+        // Assert
+        viewModel.OnParametersSetCalled.Should().BeTrue();
+    }
+
+    [Fact]
     public void OnFirstLoad_ShouldBeCallable()
     {
         // Arrange

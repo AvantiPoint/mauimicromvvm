@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Concurrent;
+using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using PropertyChangingEventArgs = System.ComponentModel.PropertyChangingEventArgs;
@@ -8,6 +10,8 @@ namespace MauiMicroMvvm;
 
 public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDisposable
 {
+    private static readonly ConcurrentDictionary<Type, Lazy<IReadOnlyDictionary<string, PropertyInfo>>> QueryablePropertiesByType = new();
+
     private readonly Dictionary<string, object> _properties = [];
     private readonly Lazy<ILogger> _lazyLogger;
     private readonly object _locker = new ();
@@ -119,11 +123,10 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
 
         if (query is not null && query.Any())
         {
-            var properties = GetType().GetProperties();
+            var properties = GetQueryableProperties();
             foreach((var key, var value) in query)
             {
-                var propInfo = properties.FirstOrDefault(p => p.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase));
-                if (propInfo is not null)
+                if (properties.TryGetValue(key, out var propInfo))
                 {
                     PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propInfo.Name));
                     _properties[propInfo.Name] = Convert.ChangeType(value, propInfo.PropertyType);
@@ -133,6 +136,26 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         }
 
         OnParametersSet();
+    }
+
+    protected virtual IReadOnlyDictionary<string, PropertyInfo> GetQueryableProperties()
+    {
+        return QueryablePropertiesByType.GetOrAdd(
+            GetType(),
+            static type => new Lazy<IReadOnlyDictionary<string, PropertyInfo>>(
+                () => BuildQueryableProperties(type),
+                LazyThreadSafetyMode.ExecutionAndPublication)).Value;
+    }
+
+    private static IReadOnlyDictionary<string, PropertyInfo> BuildQueryableProperties(Type type)
+    {
+        var properties = new Dictionary<string, PropertyInfo>(StringComparer.InvariantCultureIgnoreCase);
+        foreach (var property in type.GetProperties())
+        {
+            properties.TryAdd(property.Name, property);
+        }
+
+        return properties;
     }
 
     /// <summary>
