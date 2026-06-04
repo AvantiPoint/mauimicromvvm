@@ -10,7 +10,7 @@ namespace MauiMicroMvvm;
 
 public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDisposable
 {
-    private static readonly ConcurrentDictionary<Type, Lazy<IQueryPropertyMap>> QueryPropertyMapsByType = new();
+    private static readonly ConcurrentDictionary<Type, Lazy<IQueryParameterMap>> QueryParameterMapsByType = new();
 
     private readonly Dictionary<string, object> _properties = [];
     private readonly Lazy<ILogger> _lazyLogger;
@@ -124,37 +124,27 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         if (query is null || !query.Any())
             return;
 
-        var queryPropertyMap = GetQueryPropertyMap();
-        foreach((var key, var value) in query)
+        var queryParameterMap = GetQueryParameterMap();
+        foreach ((var key, var value) in query)
         {
-            if (queryPropertyMap.TryGetProperty(key, out var property))
-            {
-                ApplyQueryPropertyValue(property, value);
-            }
+            queryParameterMap.TrySet(this, key, value);
         }
 
         OnParametersSet();
     }
 
-    protected virtual IQueryPropertyMap GetQueryPropertyMap()
+    protected virtual IQueryParameterMap GetQueryParameterMap()
     {
-        return QueryPropertyMapsByType.GetOrAdd(
+        return QueryParameterMapsByType.GetOrAdd(
             GetType(),
-            static type => new Lazy<IQueryPropertyMap>(
-                () => BuildQueryPropertyMap(type),
+            static type => new Lazy<IQueryParameterMap>(
+                () => BuildQueryParameterMap(type),
                 LazyThreadSafetyMode.ExecutionAndPublication)).Value;
     }
 
-    protected virtual void ApplyQueryPropertyValue(IQueryProperty property, object value)
+    private static IQueryParameterMap BuildQueryParameterMap(Type type)
     {
-        RaisePropertyChanging(property.Name);
-        _properties[property.Name] = Convert.ChangeType(value, property.PropertyType);
-        RaisePropertyChanged(property.Name);
-    }
-
-    private static IQueryPropertyMap BuildQueryPropertyMap(Type type)
-    {
-        return new ReflectionQueryPropertyMap(type);
+        return ReflectionQueryParameterMap.Create(type);
     }
 
     /// <summary>

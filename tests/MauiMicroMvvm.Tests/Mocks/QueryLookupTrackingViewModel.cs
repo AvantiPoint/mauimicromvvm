@@ -4,22 +4,28 @@ namespace MauiMicroMvvm.Tests.Mocks;
 
 internal class QueryLookupTrackingViewModel : TestMauiMicroViewModel
 {
-    private readonly IQueryPropertyMap _queryPropertyMap;
+    private readonly IQueryParameterMap _queryParameterMap;
 
     public QueryLookupTrackingViewModel(ViewModelContext context) : base(context)
     {
-        TrackingProperties = new TrackingQueryPropertyMap(new Dictionary<string, IQueryProperty>(StringComparer.InvariantCultureIgnoreCase)
+        TrackingParameters = new TrackingQueryParameterMap(new Dictionary<string, IQueryParameterSetter>(StringComparer.InvariantCultureIgnoreCase)
         {
-            [nameof(TestProperty)] = new TestQueryProperty(nameof(TestProperty), typeof(string)),
-            [nameof(ValueTypeProperty)] = new TestQueryProperty(nameof(ValueTypeProperty), typeof(int)),
+            [nameof(TestProperty)] = new TestQueryParameterSetter(
+                nameof(TestProperty),
+                typeof(string),
+                (target, value) => ((QueryLookupTrackingViewModel)target).TestProperty = (string)value!),
+            [nameof(ValueTypeProperty)] = new TestQueryParameterSetter(
+                nameof(ValueTypeProperty),
+                typeof(int),
+                (target, value) => ((QueryLookupTrackingViewModel)target).ValueTypeProperty = Convert.ToInt32(value)),
         });
-        _queryPropertyMap = TrackingProperties;
+        _queryParameterMap = TrackingParameters;
     }
 
-    public TrackingQueryPropertyMap TrackingProperties { get; }
+    public TrackingQueryParameterMap TrackingParameters { get; }
 
-    protected override IQueryPropertyMap GetQueryPropertyMap()
+    protected override IQueryParameterMap GetQueryParameterMap()
     {
-        return _queryPropertyMap;
+        return _queryParameterMap;
     }
 }

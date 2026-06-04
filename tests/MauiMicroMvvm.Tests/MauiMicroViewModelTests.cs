@@ -280,7 +280,7 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
-    public void ApplyQueryAttributes_ShouldUseQueryPropertyMapAbstraction()
+    public void ApplyQueryAttributes_ShouldUseQueryParameterMapAbstraction()
     {
         // Arrange
         var context = CreateContext();
@@ -298,25 +298,41 @@ public class MauiMicroViewModelTests
         // Assert
         viewModel.TestProperty.Should().Be("QueryValue");
         viewModel.ValueTypeProperty.Should().Be(42);
-        viewModel.TrackingProperties.TryGetPropertyCount.Should().Be(3);
+        viewModel.TrackingParameters.TryGetSetterCount.Should().Be(3);
     }
 
     [Fact]
-    public void GetQueryPropertyMap_ShouldCacheDefaultMapPerViewModelType()
+    public void ApplyQueryAttributes_ShouldSetThroughPropertySetter()
     {
         // Arrange
         var context = CreateContext();
-        var first = new CachedPropertiesTestViewModel(context);
-        var second = new CachedPropertiesTestViewModel(context);
+        var viewModel = new SetterSideEffectViewModel(context);
+        var query = new Dictionary<string, object> { { "SetterSideEffectProperty", "QueryValue" } };
 
         // Act
-        var firstProperties = first.GetQueryPropertyMapForTest();
-        var secondProperties = second.GetQueryPropertyMapForTest();
+        viewModel.ApplyQueryAttributes(query);
 
         // Assert
-        secondProperties.Should().BeSameAs(firstProperties);
-        firstProperties.TryGetProperty(nameof(TestMauiMicroViewModel.TestProperty), out var property).Should().BeTrue();
-        property.Name.Should().Be(nameof(TestMauiMicroViewModel.TestProperty));
+        viewModel.SetterSideEffectProperty.Should().Be("QueryValue");
+        viewModel.SetterCallCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void GetQueryParameterMap_ShouldCacheDefaultMapPerViewModelType()
+    {
+        // Arrange
+        var context = CreateContext();
+        var first = new CachedParametersTestViewModel(context);
+        var second = new CachedParametersTestViewModel(context);
+
+        // Act
+        var firstParameters = first.GetQueryParameterMapForTest();
+        var secondParameters = second.GetQueryParameterMapForTest();
+
+        // Assert
+        secondParameters.Should().BeSameAs(firstParameters);
+        firstParameters.TryGetSetter(nameof(TestMauiMicroViewModel.TestProperty), out var setter).Should().BeTrue();
+        setter.Name.Should().Be(nameof(TestMauiMicroViewModel.TestProperty));
     }
 
     [Fact]
