@@ -120,14 +120,31 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
     {
         QueryParameters = query ?? new Dictionary<string, object>();
 
-        if (query is null || !query.Any())
+        if (query is null || query.Count == 0)
             return;
 
         var queryParameterMap = GetQueryParameterMap();
+        var errors = new List<QuerystringPropertyException>();
         foreach ((var key, var value) in query)
         {
-            queryParameterMap.TrySet(this, key, value);
+            if (!queryParameterMap.TryGetSetter(key, out var setter))
+                continue;
+
+            try
+            {
+                setter.TrySet(this, value);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(new QuerystringPropertyException(key, ex));
+            }
         }
+
+        if (errors.Count == 1)
+            throw errors[0];
+
+        if (errors.Count > 1)
+            throw new AggregateException(errors);
 
         OnParametersSet();
     }

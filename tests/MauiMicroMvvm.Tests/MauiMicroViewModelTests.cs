@@ -260,6 +260,80 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
+    public void ApplyQueryAttributes_ShouldDeserializeComplexTypesFromJson()
+    {
+        // Arrange
+        var context = CreateContext();
+        var viewModel = new TestMauiMicroViewModel(context);
+        var query = new Dictionary<string, object>
+        {
+            { "ComplexProperty", "{\"Name\":\"Widget\",\"Count\":7}" },
+        };
+
+        // Act
+        viewModel.ApplyQueryAttributes(query);
+
+        // Assert
+        viewModel.ComplexProperty.Should().NotBeNull();
+        viewModel.ComplexProperty!.Name.Should().Be("Widget");
+        viewModel.ComplexProperty.Count.Should().Be(7);
+    }
+
+    [Fact]
+    public void ApplyQueryAttributes_WithSingleSetterError_ShouldThrowQuerystringPropertyException()
+    {
+        // Arrange
+        var context = CreateContext();
+        var viewModel = new QueryErrorAggregationViewModel(context);
+        var query = new Dictionary<string, object>
+        {
+            { "UnknownProperty", "ignored" },
+            { "FirstFailure", "bad" },
+            { "TestProperty", "QueryValue" },
+        };
+
+        // Act
+        var act = () => viewModel.ApplyQueryAttributes(query);
+
+        // Assert
+        var exception = act.Should().Throw<QuerystringPropertyException>().Which;
+        exception.Message.Should().Be("Failed to set FirstFailure");
+        exception.Property.Should().Be("FirstFailure");
+        exception.InnerException.Should().BeOfType<InvalidOperationException>();
+        viewModel.TestProperty.Should().Be("QueryValue");
+        viewModel.OnParametersSetCalled.Should().BeFalse();
+        viewModel.TrackingParameters.TryGetSetterCount.Should().Be(3);
+    }
+
+    [Fact]
+    public void ApplyQueryAttributes_WithMultipleSetterErrors_ShouldAggregateAndContinue()
+    {
+        // Arrange
+        var context = CreateContext();
+        var viewModel = new QueryErrorAggregationViewModel(context);
+        var query = new Dictionary<string, object>
+        {
+            { "FirstFailure", "bad" },
+            { "TestProperty", "QueryValue" },
+            { "SecondFailure", "worse" },
+        };
+
+        // Act
+        var act = () => viewModel.ApplyQueryAttributes(query);
+
+        // Assert
+        var exception = act.Should().Throw<AggregateException>().Which;
+        exception.InnerExceptions.Should().HaveCount(2);
+        exception.InnerExceptions.Should().AllBeOfType<QuerystringPropertyException>();
+        exception.InnerExceptions.Cast<QuerystringPropertyException>()
+            .Select(error => error.Property)
+            .Should().Equal("FirstFailure", "SecondFailure");
+        viewModel.TestProperty.Should().Be("QueryValue");
+        viewModel.OnParametersSetCalled.Should().BeFalse();
+        viewModel.TrackingParameters.TryGetSetterCount.Should().Be(3);
+    }
+
+    [Fact]
     public void ApplyQueryAttributes_ShouldRaiseChangingBeforeChanged()
     {
         // Arrange

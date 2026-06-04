@@ -26,6 +26,12 @@ internal class TestMauiMicroViewModel : MauiMicroViewModel
         set => Set(value);
     }
 
+    public ComplexQueryModel? ComplexProperty
+    {
+        get => Get<ComplexQueryModel?>();
+        set => Set(value);
+    }
+
     public bool OnParametersSetCalled { get; private set; }
 
     protected override void OnParametersSet()

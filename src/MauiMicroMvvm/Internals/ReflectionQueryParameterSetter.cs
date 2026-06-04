@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Reflection;
+using System.Text.Json;
 
 namespace MauiMicroMvvm.Internals;
 
@@ -38,6 +39,9 @@ internal sealed class ReflectionQueryParameterSetter : IQueryParameterSetter
         if (conversionType.IsInstanceOfType(value))
             return value;
 
+        if (conversionType == typeof(string))
+            return Convert.ToString(value, CultureInfo.InvariantCulture);
+
         if (conversionType.IsEnum)
         {
             return value is string enumValue
@@ -45,6 +49,16 @@ internal sealed class ReflectionQueryParameterSetter : IQueryParameterSetter
                 : Enum.ToObject(conversionType, value);
         }
 
-        return Convert.ChangeType(value, conversionType, CultureInfo.InvariantCulture);
+        if (typeof(IConvertible).IsAssignableFrom(conversionType) && value is IConvertible)
+            return Convert.ChangeType(value, conversionType, CultureInfo.InvariantCulture);
+
+        if (value is string json)
+            return JsonSerializer.Deserialize(json, conversionType);
+
+        if (value is JsonElement jsonElement)
+            return jsonElement.Deserialize(conversionType);
+
+        var serializedValue = JsonSerializer.Serialize(value);
+        return JsonSerializer.Deserialize(serializedValue, conversionType);
     }
 }
