@@ -24,7 +24,7 @@ internal class QueryLookupTrackingViewModel : TestMauiMicroViewModel
 
     public TrackingQueryParameterMap TrackingParameters { get; }
 
-    protected override IQueryParameterMap GetQueryParameterMap()
+    protected override IQueryParameterMap CreateQueryParameterMap()
     {
         return _queryParameterMap;
     }

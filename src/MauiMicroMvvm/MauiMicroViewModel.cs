@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MauiMicroMvvm.Internals;
 using Microsoft.Extensions.Logging;
@@ -10,10 +9,9 @@ namespace MauiMicroMvvm;
 
 public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPropertyChanged, IViewModelActivation, IViewLifecycle, IAppLifecycle, IQueryAttributable, IDisposable
 {
-    private static readonly ConcurrentDictionary<Type, Lazy<IQueryParameterMap>> QueryParameterMapsByType = new();
-
     private readonly Dictionary<string, object> _properties = [];
     private readonly Lazy<ILogger> _lazyLogger;
+    private readonly Lazy<IQueryParameterMap> _queryParameterMap;
     private readonly object _locker = new ();
 
     protected MauiMicroViewModel(ViewModelContext context)
@@ -21,6 +19,7 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         Navigation = context.Navigation;
         PageDialogs = context.PageDialogs;
         _lazyLogger = new Lazy<ILogger>(() => context.Logger.CreateLogger(GetType().Name));
+        _queryParameterMap = new Lazy<IQueryParameterMap>(CreateQueryParameterMap);
         QueryParameters = new Dictionary<string, object>();
         _properties[nameof(IsNotBusy)] = true;
     }
@@ -135,16 +134,12 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
 
     protected virtual IQueryParameterMap GetQueryParameterMap()
     {
-        return QueryParameterMapsByType.GetOrAdd(
-            GetType(),
-            static type => new Lazy<IQueryParameterMap>(
-                () => BuildQueryParameterMap(type),
-                LazyThreadSafetyMode.ExecutionAndPublication)).Value;
+        return _queryParameterMap.Value;
     }
 
-    private static IQueryParameterMap BuildQueryParameterMap(Type type)
+    protected virtual IQueryParameterMap CreateQueryParameterMap()
     {
-        return ReflectionQueryParameterMap.Create(type);
+        return ReflectionQueryParameterMap.Create(GetType());
     }
 
     /// <summary>

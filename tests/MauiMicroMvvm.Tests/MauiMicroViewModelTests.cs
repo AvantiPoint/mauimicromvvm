@@ -318,7 +318,7 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
-    public void GetQueryParameterMap_ShouldCacheDefaultMapPerViewModelType()
+    public void GetQueryParameterMap_ShouldCreateDefaultMapPerViewModelInstance()
     {
         // Arrange
         var context = CreateContext();
@@ -330,9 +330,29 @@ public class MauiMicroViewModelTests
         var secondParameters = second.GetQueryParameterMapForTest();
 
         // Assert
-        secondParameters.Should().BeSameAs(firstParameters);
+        secondParameters.Should().NotBeSameAs(firstParameters);
         firstParameters.TryGetSetter(nameof(TestMauiMicroViewModel.TestProperty), out var setter).Should().BeTrue();
         setter.Name.Should().Be(nameof(TestMauiMicroViewModel.TestProperty));
+    }
+
+    [Fact]
+    public void GetQueryParameterMap_ShouldCreateCustomMapOncePerViewModelInstance()
+    {
+        // Arrange
+        var context = CreateContext();
+        var first = new InstanceQueryParameterMapViewModel(context);
+        var second = new InstanceQueryParameterMapViewModel(context);
+
+        // Act
+        var firstInitialMap = first.GetQueryParameterMapForTest();
+        var firstRepeatedMap = first.GetQueryParameterMapForTest();
+        var secondMap = second.GetQueryParameterMapForTest();
+
+        // Assert
+        firstRepeatedMap.Should().BeSameAs(firstInitialMap);
+        secondMap.Should().NotBeSameAs(firstInitialMap);
+        first.CreateQueryParameterMapCallCount.Should().Be(1);
+        second.CreateQueryParameterMapCallCount.Should().Be(1);
     }
 
     [Fact]
