@@ -334,6 +334,31 @@ public class MauiMicroViewModelTests
     }
 
     [Fact]
+    public void ApplyQueryAttributes_WithRejectedSetter_ShouldThrowAndSkipOnParametersSet()
+    {
+        // Arrange
+        var context = CreateContext();
+        var viewModel = new QueryErrorAggregationViewModel(context);
+        var query = new Dictionary<string, object>
+        {
+            { "RejectedSetter", "bad" },
+            { "TestProperty", "QueryValue" },
+        };
+
+        // Act
+        var act = () => viewModel.ApplyQueryAttributes(query);
+
+        // Assert
+        var exception = act.Should().Throw<QuerystringPropertyException>().Which;
+        exception.Message.Should().Be("Failed to set RejectedSetter");
+        exception.Property.Should().Be("RejectedSetter");
+        exception.InnerException.Should().BeOfType<InvalidOperationException>();
+        viewModel.TestProperty.Should().Be("QueryValue");
+        viewModel.OnParametersSetCalled.Should().BeFalse();
+        viewModel.TrackingParameters.TryGetSetterCount.Should().Be(2);
+    }
+
+    [Fact]
     public void ApplyQueryAttributes_ShouldRaiseChangingBeforeChanged()
     {
         // Arrange

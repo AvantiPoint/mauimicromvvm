@@ -132,7 +132,8 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
 
             try
             {
-                setter.TrySet(this, value);
+                if (!setter.TrySet(this, value))
+                    errors.Add(new QuerystringPropertyException(key, new InvalidOperationException("The query parameter setter returned false.")));
             }
             catch (Exception ex)
             {

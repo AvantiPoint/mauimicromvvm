@@ -22,6 +22,10 @@ internal class QueryErrorAggregationViewModel : TestMauiMicroViewModel
                 "SecondFailure",
                 typeof(string),
                 (_, _) => throw new ArgumentException("second failed")),
+            ["RejectedSetter"] = new TestQueryParameterSetter(
+                "RejectedSetter",
+                typeof(string),
+                (_, _) => false),
         });
         _queryParameterMap = TrackingParameters;
     }
