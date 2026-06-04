@@ -64,6 +64,23 @@ public class BehaviorFactoryTests
     }
 
     [Fact]
+    public void ApplyBehaviors_ShouldAttachBaseAndDerivedBehaviorRegistrations()
+    {
+        var services = new ServiceCollection();
+        services.ApplyBehavior<TestLabel, DerivedTrackingLabelBehavior>();
+        services.ApplyBehavior<TestLabel, TrackingLabelBehavior>();
+        services.AddSingleton<IBehaviorFactory>(sp => new BehaviorFactory(sp.GetServices<IRegisteredBehavior>()));
+        using var serviceProvider = services.BuildServiceProvider();
+        var element = new TestLabel();
+
+        serviceProvider.GetRequiredService<IBehaviorFactory>().ApplyBehaviors(element);
+
+        element.Behaviors.Should().HaveCount(2);
+        element.Behaviors.Should().ContainSingle(behavior => behavior.GetType() == typeof(DerivedTrackingLabelBehavior));
+        element.Behaviors.Should().ContainSingle(behavior => behavior.GetType() == typeof(TrackingLabelBehavior));
+    }
+
+    [Fact]
     public void ApplyBehaviors_ShouldAttachBehaviorRegisteredForBaseVisualElement()
     {
         var services = new ServiceCollection();

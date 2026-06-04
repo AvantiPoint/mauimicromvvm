@@ -24,6 +24,6 @@ public sealed class BehaviorFactory : IBehaviorFactory
 
     private static bool HasBehavior(VisualElement element, Type behaviorType)
     {
-        return element.Behaviors.Any(behavior => behaviorType.IsInstanceOfType(behavior));
+        return element.Behaviors.Any(behavior => behavior.GetType() == behaviorType);
     }
 }
