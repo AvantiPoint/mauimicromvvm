@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using MauiMicroMvvm.Internals;
 using Microsoft.Extensions.Logging;
 using PropertyChangingEventArgs = System.ComponentModel.PropertyChangingEventArgs;
 using PropertyChangingEventHandler = System.ComponentModel.PropertyChangingEventHandler;
@@ -10,6 +11,7 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
 {
     private readonly Dictionary<string, object> _properties = [];
     private readonly Lazy<ILogger> _lazyLogger;
+    private readonly Lazy<IQueryParameterMap> _queryParameterMap;
     private readonly object _locker = new ();
 
     protected MauiMicroViewModel(ViewModelContext context)
@@ -17,7 +19,9 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
         Navigation = context.Navigation;
         PageDialogs = context.PageDialogs;
         _lazyLogger = new Lazy<ILogger>(() => context.Logger.CreateLogger(GetType().Name));
+        _queryParameterMap = new Lazy<IQueryParameterMap>(CreateQueryParameterMap);
         QueryParameters = new Dictionary<string, object>();
+        _properties[nameof(IsNotBusy)] = true;
     }
 
     protected bool IsDisposed { get; private set; }
@@ -115,22 +119,45 @@ public abstract class MauiMicroViewModel : INotifyPropertyChanging, INotifyPrope
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         QueryParameters = query ?? new Dictionary<string, object>();
-        if (query is null || !query.Any())
+
+        if (query is null || query.Count == 0)
             return;
 
-        var properties = GetType().GetProperties();
-        foreach((var key, var value) in query)
+        var queryParameterMap = GetQueryParameterMap();
+        var errors = new List<QuerystringPropertyException>();
+        foreach ((var key, var value) in query)
         {
-            var propInfo = properties.FirstOrDefault(p => p.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase));
-            if (propInfo is not null)
+            if (!queryParameterMap.TryGetSetter(key, out var setter))
+                continue;
+
+            try
             {
-                PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propInfo.Name));
-                _properties[propInfo.Name] = Convert.ChangeType(value, propInfo.PropertyType);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propInfo.Name));
+                if (!setter.TrySet(this, value))
+                    errors.Add(new QuerystringPropertyException(key, new InvalidOperationException("The query parameter setter returned false.")));
+            }
+            catch (Exception ex)
+            {
+                errors.Add(new QuerystringPropertyException(key, ex));
             }
         }
 
+        if (errors.Count == 1)
+            throw errors[0];
+
+        if (errors.Count > 1)
+            throw new AggregateException(errors);
+
         OnParametersSet();
+    }
+
+    protected virtual IQueryParameterMap GetQueryParameterMap()
+    {
+        return _queryParameterMap.Value;
+    }
+
+    protected virtual IQueryParameterMap CreateQueryParameterMap()
+    {
+        return ReflectionQueryParameterMap.Create(GetType());
     }
 
     /// <summary>

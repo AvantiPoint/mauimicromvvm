@@ -30,13 +30,13 @@
       "datatype": "choice",
       "enableQuotelessLiterals": true,
       "replaces": "$dotnetversion$",
-      "defaultValue": "net8.0",
+      "defaultValue": "net10.0",
       "description": "Target Framework",
       "choices": [
         {
-          "choice": "net8.0",
-          "displayName": ".NET 8.0 (Long Term Support)",
-          "description": "Target .NET 8.0 (Long Term Support)"
+          "choice": "net10.0",
+          "displayName": ".NET 10.0 (Long Term Support)",
+          "description": "Target .NET 10.0 (Long Term Support)"
         }
       ]
     },
@@ -52,6 +52,21 @@
       "defaultValue": "false",
       "displayName": "Use ReactiveUI"
     },
+    "MauiVersion": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "$MauiVersion$",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(TargetFramework == 'net10.0')",
+            "value": "10.0.70"
+          }
+        ]
+      }
+    },
     "MicrosoftLoggingVersion": {
       "type": "generated",
       "generator": "switch",
@@ -61,8 +76,8 @@
         "datatype": "string",
         "cases": [
           {
-            "condition": "(TargetFramework == 'net8.0')",
-            "value": "8.0.0"
+            "condition": "(TargetFramework == 'net10.0')",
+            "value": "10.0.8"
           }
         ]
       }

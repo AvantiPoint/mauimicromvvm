@@ -46,13 +46,13 @@
     <!--#if Reactive -->
     <Using Include="ReactiveUI" />
     <Using Include="ReactiveUI.Fody.Helpers" />
-    <PackageReference Include="ReactiveUI.Fody" Version="19.5.39" />
+    <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
     <PackageReference Include="AvantiPoint.MauiMicroMvvm.Rx" Version="$MauiMicroVersion$" />
     <!--#else -->
     <PackageReference Include="AvantiPoint.MauiMicroMvvm" Version="$MauiMicroVersion$" />
     <!--#endif -->
-    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$MauiVersion$" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$MauiVersion$" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="$MicrosoftLoggingVersion$" />
   </ItemGroup>
 

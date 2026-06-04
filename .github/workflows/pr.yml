@@ -10,6 +10,7 @@ on:
       - "Directory.Build.props"
       - "Directory.Build.targets"
       - "Directory.Packages.props"
+      - "global.json"
       - "MauiMicroMvvm.sln"
       - "version.json"
       - "build.slnf"
@@ -21,7 +22,7 @@ jobs:
     with:
       name: MauiMicroMvvm
       solution-path: build.slnf
-      dotnet-version: 8.0.x
+      dotnet-version: 10.0.x
       install-workload: maui
 
   validate:
@@ -34,10 +35,10 @@ jobs:
           xcode-version: 'latest-stable'
       - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
       - name: Pin .NET SDK for template validation
         run: |
-          SDK_VERSION=$(dotnet --list-sdks | awk '/^8\./ { version=$1 } END { print version }')
+          SDK_VERSION=$(dotnet --list-sdks | awk '/^10\./ { version=$1 } END { print version }')
           dotnet new globaljson --sdk-version "$SDK_VERSION" --roll-forward latestFeature
       - name: Download Artifacts
         uses: actions/download-artifact@v8
@@ -54,5 +55,5 @@ jobs:
         run: dotnet workload install maui
         working-directory: TestProject
       - name: Build Project
-        run: dotnet build -f net8.0-maccatalyst -p:MauiVersion=8.0.3
+        run: dotnet build -f net10.0-android -p:MauiVersion=10.0.70
         working-directory: TestProject

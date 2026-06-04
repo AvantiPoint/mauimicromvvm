@@ -10,13 +10,11 @@ public class MessageDemoPageViewModel : RxMauiMicroViewModel
     public MessageDemoPageViewModel(ViewModelContext context) 
         : base(context)
     {
-        AppLifecycle.Subscribe(state => Logger.LogInformation($"Application Lifecycle State: {state}"))
-            .DisposeWith(Disposables);
-        ViewLifecycle.Subscribe(state => Logger.LogInformation($"View Lifecycle State: {state}"))
-            .DisposeWith(Disposables);
+        Disposables.Add(AppLifecycle.Subscribe(state => Logger.LogInformation($"Application Lifecycle State: {state}")));
+        Disposables.Add(ViewLifecycle.Subscribe(state => Logger.LogInformation($"View Lifecycle State: {state}")));
     }
 
-    private string _message;
+    private string _message = string.Empty;
     public string Message
     {
         get => _message;

@@ -27,8 +27,8 @@ public class RxMauiMicroViewModel : ReactiveObject, IViewModelActivation, IViewL
         _lazyLogger = new Lazy<ILogger>(() => context.Logger.CreateLogger(GetType().Name));
         this.WhenAnyValue(x => x.IsBusy)
             .Select(x => !x)
-            .ToProperty(this, nameof(IsNotBusy), out _isNotBusyHelper, () => true)
-            .DisposeWith(Disposables);
+            .ToProperty(this, nameof(IsNotBusy), out _isNotBusyHelper, () => true);
+        Disposables.Add(_isNotBusyHelper);
     }
 
     private bool _isDisposed;

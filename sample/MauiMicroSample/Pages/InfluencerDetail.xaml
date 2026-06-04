@@ -52,13 +52,18 @@
            IsVisible="{Binding Influencer.Mvp}" />
     </StackLayout>
 
-    <Frame HasShadow="True"
-         Grid.Row="1"
-         Grid.ColumnSpan="2"
-         HorizontalOptions="Start"
-         Margin="5,20">
+    <Border Grid.Row="1"
+            Grid.ColumnSpan="2"
+            HorizontalOptions="Start"
+            Margin="5,20">
+      <Border.Shadow>
+        <Shadow Brush="Black"
+                Opacity="0.2"
+                Radius="8"
+                Offset="0,2" />
+      </Border.Shadow>
       <Label Text="{Binding Influencer.Bio}" />
-    </Frame>
+    </Border>
 
     <StackLayout HorizontalOptions="Center"
                Orientation="Horizontal"

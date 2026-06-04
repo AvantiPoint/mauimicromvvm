@@ -4,7 +4,9 @@
     "projects": [
       "src\\MauiMicroMvvm.Templates\\MauiMicroMvvm.Templates.csproj",
       "src\\MauiMicroMvvm\\MauiMicroMvvm.csproj",
-      "src\\MauiMicroMvvm.Rx\\MauiMicroMvvm.Rx.csproj"
+      "src\\MauiMicroMvvm.Rx\\MauiMicroMvvm.Rx.csproj",
+      "tests\\MauiMicroMvvm.Tests\\MauiMicroMvvm.Tests.csproj",
+      "tests\\MauiMicroMvvm.Rx.Tests\\MauiMicroMvvm.Rx.Tests.csproj"
     ]
   }
 }

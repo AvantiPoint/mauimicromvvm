@@ -9,7 +9,7 @@ public class MessageDisplayViewModel : RxMauiMicroViewModel
     {
     }
 
-    private string _message;
+    private string _message = string.Empty;
     public string Message
     {
         get => _message;

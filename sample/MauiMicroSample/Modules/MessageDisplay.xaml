@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Frame xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
-       micro:MauiMicro.Autowire="True"
-       micro:MauiMicro.SharedContext="{Binding Message}"
-       HasShadow="True"
-       CornerRadius="15"
-       x:Class="MauiMicroSample.Modules.MessageDisplay">
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+        micro:MauiMicro.Autowire="True"
+        micro:MauiMicro.SharedContext="{Binding Message}"
+        StrokeShape="RoundRectangle 15"
+        StrokeThickness="0"
+        x:Class="MauiMicroSample.Modules.MessageDisplay">
+  <Border.Shadow>
+    <Shadow Brush="Black"
+            Opacity="0.2"
+            Radius="8"
+            Offset="0,2" />
+  </Border.Shadow>
   <VerticalStackLayout VerticalOptions="Center"
                        HorizontalOptions="Center">
     <Label Text="Module with Shared Context"
            FontAttributes="Bold" />
     <Label Text="{Binding Message}" />
   </VerticalStackLayout>
-</Frame>
+</Border>
